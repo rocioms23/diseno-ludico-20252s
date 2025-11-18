@@ -1,0 +1,331 @@
+/* --- Variables de la paleta "Ataúd" --- */
+:root {
+    --color-pergamino: #f5eeda; /* Un color papel viejo y pálido */
+    --color-tinta: #2c2c2c;     /* Tinta negra/carbón */
+    --color-fondo: #1a1a1a;     /* Fondo negro/oscuro */
+    --color-gris-adorno: #4a4a4a;  /* Gris oscuro del ataúd */
+    --color-plata: #aba6a2;      /* Plata/Gris claro del adorno */
+    --font-titulo: 'IM Fell English SC', serif;
+    --font-cuerpo: 'Lora', serif;
+}
+
+/* --- Reseteo y Base (Móvil Primero) --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-fondo);
+    color: var(--color-tinta);
+    font-family: var(--font-cuerpo);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+#diary-container {
+    width: 100%;
+    max-width: 600px;
+    min-height: 100vh;
+    background-color: var(--color-pergamino);
+    /* Sombra sutil para darle profundidad */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    padding: 20px;
+}
+
+/* --- Estilo de Escritorio --- */
+@media (min-width: 600px) {
+    body {
+        align-items: center; /* Centra verticalmente en escritorio */
+        padding: 20px;
+    }
+    #diary-container {
+        min-height: auto;
+        border: 2px solid var(--color-gris-adorno);
+        border-radius: 5px;
+    }
+}
+
+/* --- Encabezado --- */
+#diary-header {
+    text-align: center;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--color-plata);
+    padding-bottom: 15px;
+}
+
+#diary-header h1 {
+    font-family: var(--font-titulo);
+    font-size: 2.5em; /* Más grande y elegante */
+    color: var(--color-tinta);
+    text-shadow: none; /* Quitamos el rojo */
+    animation: none; /* Quitamos la animación "spooky" */
+}
+
+/* --- Pantalla de Configuración --- */
+#setup-screen {
+    text-align: left;
+}
+
+.setup-intro {
+    font-size: 1.1em;
+    font-style: italic;
+    color: var(--color-gris-adorno);
+    text-align: center;
+    margin: 15px 0;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.3em;
+    font-family: var(--font-titulo);
+    color: var(--color-tinta);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid var(--color-gris-adorno);
+    color: var(--color-tinta);
+    font-family: var(--font-cuerpo);
+    font-size: 1.1em;
+    border-radius: 0; /* Más limpio */
+}
+
+/* --- Botones --- */
+button {
+    width: 100%;
+    padding: 15px 20px;
+    background-color: var(--color-gris-adorno); /* Gris oscuro del ataúd */
+    color: var(--color-pergamino);
+    border: 1px solid var(--color-plata);
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 1.3em;
+    font-family: var(--font-titulo);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+    background-color: #333; /* Un poco más oscuro */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: #fff;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* --- Pantalla de Juego --- */
+.game-header {
+    margin-bottom: 20px;
+}
+
+/* --- ¡AQUÍ ESTÁ EL CAMBIO! --- */
+.player-turn {
+    font-family: var(--font-titulo);
+    font-size: 1.8em;
+    padding: 12px 10px; /* Añadido padding superior/inferior */
+    margin-bottom: 20px; /* Aumentado el margen */
+    
+    /* Nuevos estilos para el "sello" */
+    color: var(--color-pergamino); /* Texto claro */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.4); /* Sombra para profundidad */
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.object-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(0,0,0,0.05); /* Fondo sutil */
+    padding: 10px;
+    border-radius: 3px;
+    margin-bottom: 25px;
+}
+
+.object-controls span {
+    font-size: 1.2em;
+    font-family: var(--font-titulo);
+}
+
+.object-counter {
+    display: flex;
+    align-items: center;
+}
+
+.object-counter span {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 0 15px;
+    font-family: var(--font-cuerpo);
+}
+
+/* Botones pequeños para objetos */
+.object-counter button {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    font-size: 1.2em;
+    line-height: 1;
+    border-radius: 50%;
+}
+
+.room-header {
+    font-family: var(--font-titulo);
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--color-plata);
+    padding-bottom: 5px;
+}
+
+#room-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px; /* Espacio para el botón de Siguiente Turno */
+}
+
+.room-item {
+    display: flex;
+    flex-direction: column; /* Apilado para móviles */
+    padding: 15px 5px;
+    border-bottom: 1px dashed var(--color-plata); /* Como un libro de contabilidad */
+    /* Animación de entrada (se activa desde JS) */
+}
+
+.room-name {
+    font-size: 1.6em;
+    font-family: var(--font-cuerpo);
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+.player-visits {
+    display: flex;
+    flex-direction: column; /* Cada jugador en su propia fila */
+    gap: 10px;
+}
+
+.player-visit-control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.player-indicator {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.9em;
+    flex-shrink: 0; /* No se encoge */
+}
+
+/* Marcadores de visita visuales */
+.visit-markers {
+    flex-grow: 1;
+    text-align: left;
+    padding: 0 10px;
+}
+
+.visit-marker {
+    font-size: 1.3em;
+    margin: 0 3px;
+    color: var(--color-gris-adorno); /* Por defecto */
+    opacity: 0.5;
+}
+.visit-marker.fa-solid { /* Marcador "lleno" */
+    opacity: 1;
+    /* El color se aplica desde el JS con el color del jugador */
+}
+
+/* Contenedor para los botones + y - */
+.visit-controls {
+    display: flex;
+    flex-shrink: 0;
+}
+
+/* --- ESTILO DE BOTÓN GENÉRICO (+ y -) --- */
+.visit-btn {
+    width: 40px;  /* Más pequeño para que quepan ambos */
+    height: 40px; /* Más pequeño para que quepan ambos */
+    padding: 0;
+    font-size: 1em; /* Fuente más pequeña */
+    line-height: 1;
+    border-radius: 50%;
+    background-color: #fff;
+    color: var(--color-gris-adorno);
+    border: 2px solid var(--color-gris-adorno);
+    flex-shrink: 0;
+    margin-left: 5px; /* Espacio entre botones */
+}
+
+.visit-btn:hover {
+    background-color: var(--color-plata);
+    color: #fff;
+}
+
+.visit-btn:disabled {
+    background-color: var(--color-plata);
+    color: #fff;
+    opacity: 0.4;
+    border-color: var(--color-plata);
+}
+
+/* Botón de Siguiente Turno (fijo al final) */
+#next-turn-btn {
+    margin-top: 15px;
+}
+
+/* --- Animaciones de Transición --- */
+.fade-in {
+    /* 'backwards' aplica el estado 'from' inmediatamente */
+    animation: fadeIn 0.4s ease-out backwards;
+}
+@keyframes fadeIn {
+    from { 
+        opacity: 0;
+        transform: translateY(10px); /* Sutil deslizamiento hacia arriba */
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-out {
+    /* 'forwards' mantiene el estado 'to' al finalizar */
+    animation: fadeOut 0.4s ease-in forwards;
+}
+@keyframes fadeOut {
+    from { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to { 
+        opacity: 0;
+        transform: translateY(-10px); /* Sutil deslizamiento hacia arriba al salir */
+    }
+}
