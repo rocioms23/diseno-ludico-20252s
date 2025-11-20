@@ -329,3 +329,79 @@ button:disabled {
         transform: translateY(-10px); /* Sutil deslizamiento hacia arriba al salir */
     }
 }
+/* --- ESTILOS ADICIONALES PARA NUEVAS FUNCIONALIDADES --- */
+
+/* --- MODAL --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--color-pergamino);
+    padding: 2em;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    border: 1px solid var(--color-borde-oscuro);
+    text-align: center;
+}
+
+/* --- LISTA DE FANTASMAS --- */
+#ghost-list-container {
+    padding: 10px;
+    border: 1px solid var(--color-borde-oscuro);
+    background-color: #fdf5e6; /* Un color pergamino más claro */
+}
+
+/* --- ESTILOS DE PRUEBAS Y FANTASMAS --- */
+.evidence-item.validated {
+    font-weight: bold;
+    color: #2e7d32; /* Verde oscuro */
+}
+
+.evidence-item.incorrect {
+    text-decoration: line-through;
+    color: #c62828; /* Rojo oscuro */
+}
+
+.ghost-item.ruled-out {
+    opacity: 0.5;
+    text-decoration: line-through;
+}
+
+.evidence-btn.selected {
+    border: 2px solid #1976d2; /* Azul */
+}
+
+.correct-guess {
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+.incorrect-guess {
+    color: #c62828;
+    font-weight: bold;
+}
+
+/* --- LAYOUT Y BOTONES DE ACCIÓN --- */
+#investigation-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.action-buttons {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}

@@ -22,6 +22,19 @@ const ROOM_NAMES = [
 // Colores de jugador más sutiles y "góticos"
 const PLAYER_COLORS = ['#8B0000', '#004D40', '#4A148C', '#B8860B']; // Rojo Oscuro, Verde Bosque, Púrpura, Oro Viejo
 
+const GHOST_DATA = [
+    { name: "Espectro", evidence: ["EMF", "DOTS", "CAJA ESPECTRAL"] },
+    { name: "Sombra", evidence: ["EMF", "TEMPERATURA", "LIBRO"] },
+    { name: "Yokai", evidence: ["DOTS", "CAJA ESPECTRAL", "ORBES"] },
+    { name: "Demonio", evidence: ["TEMPERATURA", "LIBRO", "MICRÓFONO PARABÓLICO"] },
+    { name: "Poltergeist", evidence: ["ULTRAVIOLETA", "ORBES", "MICRÓFONO PARABÓLICO"] }
+];
+
+const EVIDENCE_TYPES = [
+    "EMF", "DOTS", "TEMPERATURA", "CAJA ESPECTRAL", 
+    "ULTRAVIOLETA", "LIBRO", "ORBES", "MICRÓFONO PARABÓLICO"
+];
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // Iniciar con la animación de entrada
@@ -68,7 +81,7 @@ function renderSetupScreen() {
                 <label for="game-mode">Modo de Juego:</label>
                 <select id="game-mode">
                     <option value="standard">Estándar (Máx 2 visitas)</option>
-                    <option value="strict">Estricto (Máx 1 visita)</option>
+                    <option value="strict" selected>Estricto (Máx 1 visita)</option>
                     <option value="objects">Objetos (Visitas varían)</option>
                 </select>
             </div>
@@ -86,15 +99,52 @@ function renderSetupScreen() {
     });
 }
 
+// --- MODAL DE CAZA ---
+function showHuntModal(customMessage = null) {
+    // Si ya existe un modal, no hacer nada
+    if (document.getElementById('modal-overlay')) {
+        return;
+    }
+
+    const roomNumber = Math.floor(Math.random() * ROOM_NAMES.length) + 1;
+    let message = `¡El fantasma ha comenzado a cazar desde la habitación ${roomNumber}!`;
+    if (customMessage) {
+        message = `${customMessage} ${message}`;
+    }
+
+    const modalOverlay = document.createElement('div');
+    modalOverlay.id = 'modal-overlay';
+    modalOverlay.className = 'modal-overlay';
+
+    modalOverlay.innerHTML = `
+        <div class="modal-content">
+            <h2>¡Cacería!</h2>
+            <p>${message}</p>
+            <button id="close-modal-btn">Entendido</button>
+        </div>
+    `;
+
+    document.body.appendChild(modalOverlay);
+
+    document.getElementById('close-modal-btn').addEventListener('click', () => {
+        modalOverlay.remove();
+    });
+}
+
 // --- GAME SCREEN ---
 function initializeGameState() {
+    const secretGhostIndex = Math.floor(Math.random() * GHOST_DATA.length);
     gameState = {
         currentPlayer: 0,
         objects: 0,
         visits: ROOM_NAMES.reduce((acc, room) => {
             acc[room] = Array(gameConfig.playerCount).fill(0);
             return acc;
-        }, {})
+        }, {}),
+        secretGhost: GHOST_DATA[secretGhostIndex],
+        validatedEvidence: [],
+        incorrectEvidence: [],
+        round: 1
     };
 }
 
@@ -161,11 +211,45 @@ function renderGameScreen() {
                 ${objectControlsHTML}
             </div>
             
+            <div id="investigation-section">
+                <div id="evidence-checklist">
+                    ${EVIDENCE_TYPES.map(evidence => {
+                        const isCorrect = gameState.validatedEvidence.includes(evidence);
+                        const isIncorrect = gameState.incorrectEvidence.includes(evidence);
+                        let className = 'evidence-item';
+                        if (isCorrect) className += ' validated';
+                        if (isIncorrect) className += ' incorrect';
+                        return `<div class="${className}">${evidence}</div>`;
+                    }).join('')}
+                </div>
+                <div id="ghost-list-container">
+                    <h3>Fantasmas Posibles</h3>
+                    <div id="ghost-list">
+                        ${GHOST_DATA.map(ghost => {
+                            const isRuledOut = gameState.validatedEvidence.length > 0 && 
+                                               !gameState.validatedEvidence.every(ev => ghost.evidence.includes(ev));
+                            return `<div class="ghost-item ${isRuledOut ? 'ruled-out' : ''}">${ghost.name}</div>`;
+                        }).join('')}
+                    </div>
+                </div>
+                <div class="secret-ghost-tester">
+                     <input type="checkbox" id="show-secret-ghost">
+                     <label for="show-secret-ghost">Mostrar Fantasma Secreto</label>
+                     <span id="secret-ghost-name" style="display:none;">(${gameState.secretGhost.name})</span>
+                </div>
+                <div class="action-buttons">
+                    <button id="validate-evidence-btn" style="display: ${gameState.round > 1 ? 'block' : 'none'};">Validar Prueba</button>
+                </div>
+            </div>
+
             <h2 class="room-header">Registro de Habitaciones</h2>
             <ul id="room-list">
                 ${generateRoomList()}
             </ul>
-            <button id="next-turn-btn">Siguiente Turno <i class="fas fa-arrow-right"></i></button>
+             <div class="game-actions">
+                <button id="hunt-event-btn">Evento de Caza</button>
+                <button id="next-turn-btn">Siguiente Turno <i class="fas fa-arrow-right"></i></button>
+             </div>
         </div>
     `;
 
@@ -176,6 +260,20 @@ function renderGameScreen() {
 
     // --- Listeners de botones ---
     document.getElementById('next-turn-btn').addEventListener('click', nextTurn);
+    
+    document.getElementById('show-secret-ghost').addEventListener('change', (e) => {
+        document.getElementById('secret-ghost-name').style.display = e.target.checked ? 'inline' : 'none';
+    });
+
+    document.getElementById('hunt-event-btn').addEventListener('click', () => {
+        showHuntModal();
+    });
+
+    if (gameState.round > 1) {
+        document.getElementById('validate-evidence-btn').addEventListener('click', () => {
+            renderValidationScreen(); // Cambiado para renderizar en modal
+        });
+    }
     
     // --- ¡AQUÍ ESTÁ EL CAMBIO! (Solo añadir listeners si los botones existen) ---
     if (gameConfig.gameMode === 'objects') {
@@ -321,5 +419,95 @@ function addVisitButtonListeners() {
 
 function nextTurn() {
     gameState.currentPlayer = (gameState.currentPlayer + 1) % gameConfig.playerCount;
+    if (gameState.currentPlayer === 0) {
+        gameState.round++;
+    }
     transitionToScreen(renderGameScreen);
+}
+
+function renderValidationScreen() {
+    // Evita crear modales duplicados
+    if (document.getElementById('modal-overlay')) return;
+
+    let selectedEvidence = null;
+
+    const modalOverlay = document.createElement('div');
+    modalOverlay.id = 'modal-overlay';
+    modalOverlay.className = 'modal-overlay';
+
+    modalOverlay.innerHTML = `
+        <div class="modal-content" id="validation-modal">
+            <h2>Validar Prueba</h2>
+            <div id="evidence-buttons">
+                ${EVIDENCE_TYPES.map(evidence => {
+                    const isDisabled = gameState.validatedEvidence.includes(evidence) || gameState.incorrectEvidence.includes(evidence);
+                    return `<button class="evidence-btn" data-evidence="${evidence}" ${isDisabled ? 'disabled' : ''}>${evidence}</button>`;
+                }).join('')}
+            </div>
+            <div id="validation-result" style="min-height: 24px; margin-top: 15px;"></div>
+            <div class="modal-actions">
+                <button id="confirm-validation-btn" disabled>Confirmar</button>
+                <button id="back-to-game-btn">Volver</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modalOverlay);
+
+    modalOverlay.querySelectorAll('.evidence-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            selectedEvidence = e.target.dataset.evidence;
+            modalOverlay.querySelectorAll('.evidence-btn').forEach(btn => btn.classList.remove('selected'));
+            e.target.classList.add('selected');
+            modalOverlay.querySelector('#confirm-validation-btn').disabled = false;
+        });
+    });
+
+    modalOverlay.querySelector('#confirm-validation-btn').addEventListener('click', () => {
+        const isCorrect = gameState.secretGhost.evidence.includes(selectedEvidence);
+        const resultDiv = modalOverlay.querySelector('#validation-result');
+        const confirmButton = modalOverlay.querySelector('#confirm-validation-btn');
+        const evidenceButtons = modalOverlay.querySelector('#evidence-buttons');
+
+        // Deshabilitar botones para evitar clics múltiples
+        confirmButton.disabled = true;
+        evidenceButtons.style.pointerEvents = 'none';
+
+        if (isCorrect) {
+            if (!gameState.validatedEvidence.includes(selectedEvidence)) {
+                gameState.validatedEvidence.push(selectedEvidence);
+            }
+            resultDiv.innerHTML = `<p class="correct-guess">¡Prueba correcta!</p>`;
+            resultDiv.style.color = 'var(--success-glow)';
+            
+            setTimeout(() => {
+                modalOverlay.remove();
+                rerenderGameScreen(); // Re-renderizar para actualizar el estado visual
+            }, 1500);
+        } else {
+            if (!gameState.incorrectEvidence.includes(selectedEvidence)) {
+                gameState.incorrectEvidence.push(selectedEvidence);
+            }
+            resultDiv.innerHTML = `<p class="incorrect-guess">¡Prueba incorrecta!</p>`;
+            resultDiv.style.color = 'var(--fail-glow)';
+
+            setTimeout(() => {
+                modalOverlay.remove();
+                showHuntModal("La prueba incorrecta ha provocado al fantasma.");
+                rerenderGameScreen();
+            }, 1500);
+        }
+    });
+
+    modalOverlay.querySelector('#back-to-game-btn').addEventListener('click', () => {
+        modalOverlay.remove();
+    });
+}
+
+function rerenderGameScreen() {
+    // Guarda el estado actual del scroll
+    const scrollY = window.scrollY;
+    renderGameScreen();
+    // Restaura el scroll
+    window.scrollTo(0, scrollY);
 }
