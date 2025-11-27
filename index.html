@@ -2,24 +2,73 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Diario del Investigador</title>
     
     <link rel="stylesheet" href="css/style.css">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=IM+Fell+English+SC&family=Lora:ital,wght@0,400;0,700;1,400&family=Creepster&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <div id="diary-container">
-        <header id="diary-header">
-            <h1>Diario del Investigador</h1>
-        </header>
-        <main id="app"></main>
+
+    <div id="game-wrapper">
+        <nav id="folder-tabs">
+            <button class="folder-tab active" data-target="tab-diary">
+                <img src="assets/iconos/diario_pestaña.png" alt="Diario" class="tab-icon">
+                <span>Diario</span>
+            </button>
+            <button class="folder-tab" data-target="tab-clues">
+                <img src="assets/iconos/pista_pestaña.png" alt="Pistas" class="tab-icon">
+                <span>Pistas</span>
+            </button>
+        </nav>
+
+        <main id="paper-sheet">
+            <section id="tab-diary" class="tab-content active">
+                <header class="sheet-header">
+                    <h1>Diario del Investigador</h1>
+                    <div class="separator-line"></div>
+                    <h2>Registro de habitaciones</h2>
+                </header>
+                <div id="room-list"></div>
+            </section>
+
+            <section id="tab-clues" class="tab-content">
+                <header class="sheet-header">
+                    <h1>Registro de Pistas</h1>
+                    <div class="separator-line"></div>
+                </header>
+
+                <div class="clues-notebook-section">
+                    <h3 class="notebook-title">Pruebas</h3>
+                    <div id="evidence-grid" class="handwritten-grid"></div>
+                </div>
+
+                <div class="clues-notebook-section">
+                    <h3 class="notebook-title">Fantasmas Posibles</h3>
+                    <div id="ghost-grid" class="handwritten-grid"></div>
+                </div>
+
+                <div class="validation-footer">
+                    <button id="open-validation-btn">Validar Prueba</button>
+                </div>
+            </section>
+        </main>
     </div>
+
+    <div id="validation-overlay" class="hidden">
+        <div class="mobile-layout-limit">
+            <div id="validation-content"></div>
+            
+            <div class="pentagram-footer">
+                <img src="assets/validacion/pentagrama.png" alt="Pentagrama">
+            </div>
+        </div>
+    </div>
+
     <script src="js/main.js"></script>
 </body>
 </html>
