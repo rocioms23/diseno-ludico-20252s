@@ -16,6 +16,15 @@ const ROOM_DATA = [
     { name: "Garage", img: "garage.png" }
 ];
 
+// --- NUEVO: LISTA DE HABITACIONES CON PROTECCIÓN ---
+// Solo estas mostrarán la opción de escudo.
+const SAFE_ROOMS = [
+    "Biblioteca", 
+    "Baño 1", 
+    "Dormitorio 2", // Corresponde a "Habitación 2"
+    "Sala de Estudio"
+];
+
 const GHOST_DATA = [
     { name: "Espectro", evidence: ["EMF", "DOTS", "CAJA ESPECTRAL"] },
     { name: "Sombra", evidence: ["EMF", "TEMPERATURA", "LIBRO"] },
@@ -57,15 +66,27 @@ let gameState = {
     secretGhost: null
 };
 
+// --- INICIALIZACIÓN ---
 document.addEventListener('DOMContentLoaded', () => {
     initGame();
     initTabs();
     initValidation();
+
+    // Lógica de Portada
+    const startBtn = document.getElementById('start-game-btn');
+    const cover = document.getElementById('book-cover');
+    if (startBtn && cover) {
+        startBtn.addEventListener('click', () => {
+            cover.classList.add('book-opened');
+            setTimeout(() => { cover.style.display = 'none'; }, 800);
+        });
+    }
 });
 
 function initGame() {
     const rnd = Math.floor(Math.random() * GHOST_DATA.length);
     gameState.secretGhost = GHOST_DATA[rnd];
+    // Inicializamos datos para todas (incluso si no se usan visualmente, para evitar errores)
     ROOM_DATA.forEach(r => {
         gameState.visits[r.name] = { clues: [0, 0, 0, 0], protection: [0, 0, 0, 0] };
     });
@@ -86,27 +107,47 @@ function initTabs() {
     });
 }
 
+// --- RENDERIZADO DE HABITACIONES (MODIFICADO) ---
 function renderRooms() {
     const container = document.getElementById('room-list');
     container.innerHTML = ROOM_DATA.map(room => {
+        // Verificamos si esta habitación permite protección
+        const isSafeRoom = SAFE_ROOMS.includes(room.name);
+        
         let playersHtml = '';
         for (let i = 0; i < 4; i++) {
             const hasClue = gameState.visits[room.name].clues[i] === 1;
             const hasProt = gameState.visits[room.name].protection[i] === 1;
+            
             const clueClass = hasClue ? 'status-icon active' : 'status-icon';
             const protClass = hasProt ? 'status-icon active' : 'status-icon';
-            playersHtml += `
-                <div class="player-row">
-                    <div class="action-zone clue-zone" onclick="toggleAction('${room.name}', ${i}, 'clues')">
-                        <div class="player-circle" style="background-color: ${PLAYER_COLORS[i]}"></div>
-                        <img src="${ICONS.clues}" class="${clueClass}" alt="Pista">
-                    </div>
-                    <div class="row-divider"></div>
-                    <div class="action-zone prot-zone" onclick="toggleAction('${room.name}', ${i}, 'protection')">
-                        <img src="${ICONS.protection}" class="${protClass}" alt="Protección">
-                    </div>
-                </div>`;
+
+            if (isSafeRoom) {
+                // DISEÑO 2 COLUMNAS (Pista | Protección)
+                playersHtml += `
+                    <div class="player-row">
+                        <div class="action-zone clue-zone" onclick="toggleAction('${room.name}', ${i}, 'clues')">
+                            <div class="player-circle" style="background-color: ${PLAYER_COLORS[i]}"></div>
+                            <img src="${ICONS.clues}" class="${clueClass}" alt="Pista">
+                        </div>
+                        <div class="row-divider"></div>
+                        <div class="action-zone prot-zone" onclick="toggleAction('${room.name}', ${i}, 'protection')">
+                            <img src="${ICONS.protection}" class="${protClass}" alt="Protección">
+                        </div>
+                    </div>`;
+            } else {
+                // DISEÑO 1 COLUMNA (Solo Pista, ancho completo)
+                // Sobrescribimos el grid para que sea 1 sola columna
+                playersHtml += `
+                    <div class="player-row" style="grid-template-columns: 1fr;">
+                        <div class="action-zone clue-zone" onclick="toggleAction('${room.name}', ${i}, 'clues')" style="justify-content: center; gap: 20px;">
+                            <div class="player-circle" style="background-color: ${PLAYER_COLORS[i]}"></div>
+                            <img src="${ICONS.clues}" class="${clueClass}" alt="Pista">
+                        </div>
+                    </div>`;
+            }
         }
+
         return `
             <div class="room-card" style="background-image: url('assets/losetas/${room.img}');">
                 <div class="room-overlay-bg">
@@ -200,32 +241,25 @@ window.doVerify = function() {
         
         content.innerHTML = `
             <div class="val-header"><button class="back-btn" onclick="closeVal()"><i class="fas fa-chevron-left"></i></button></div>
-            
             <div class="safe-screen-container">
                 <h1 class="title-safe">ESTÁS A SALVO</h1>
-                
                 <p class="safe-message-bottom">
                     La pista ingresada es <span class="text-green">correcta</span>.<br>
                     El fantasma permanece tranquilo...
                 </p>
             </div>`;
-            
     } else {
         if (!gameState.incorrectEvidence.includes(selectedEv)) gameState.incorrectEvidence.push(selectedEv);
         overlay.classList.add('hunt-mode'); 
         
-        // AQUÍ ESTABA EL ERROR: Ahora la clase es 'ghost-hunt-img' para coincidir con CSS
         content.innerHTML = `
             <div class="val-header"><button class="back-btn" onclick="closeVal()"><i class="fas fa-chevron-left"></i></button></div>
-            
             <div class="hunt-screen-container">
                 <h1 class="title-hunt">CACERÍA</h1>
-                
                 <div class="hunt-visual-group">
                     <img src="assets/validacion/Fantasma.png" class="ghost-hunt-img" alt="Fantasma">
                     <img src="assets/validacion/pentagrama.png" class="hunt-pentagram-img" alt="Pentagrama">
                 </div>
-                
                 <p class="hunt-message-bottom">
                     Has ingresado una pista <span class="text-red">incorrecta</span>...<br>
                     Y desembocado la ira del fantasma.<br>

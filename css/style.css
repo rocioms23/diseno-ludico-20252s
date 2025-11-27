@@ -5,10 +5,15 @@
     --bg-paper: #d8c8b0; 
     --bg-tab-inactive: #b3a088;
     --text-ink: #1a1a1a;
+    
+    /* Colores y Temática */
     --bg-dark: #050505; 
     --neon-red: #ff0000;
     --neon-green: #66ff66;
+    
     --p1: #66FF66; --p2: #FF3333; --p3: #3333FF; --p4: #FFFF33;
+    
+    /* Fuentes */
     --font-title: 'IM Fell English SC', serif;
     --font-body: 'Lora', serif;
     --font-hand: 'Kalam', cursive;
@@ -20,15 +25,28 @@
 body {
     background-color: #000;
     font-family: var(--font-body);
-    display: flex; justify-content: center; height: 100vh; overflow: hidden; padding: 0;
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    padding: 0;
 }
 
-#game-wrapper { width: 100%; max-width: 500px; height: 100%; display: flex; flex-direction: column; position: relative; }
+#game-wrapper {
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
 
 /* =========================================
    2. PESTAÑAS
    ========================================= */
-#folder-tabs { display: flex; padding: 10px 10px 0 10px; margin-bottom: -4px; position: relative; z-index: 20; flex-shrink: 0; }
+#folder-tabs {
+    display: flex; padding: 10px 10px 0 10px; margin-bottom: -4px; position: relative; z-index: 20; flex-shrink: 0;
+}
 .folder-tab {
     flex: 1; border: none; background-color: var(--bg-tab-inactive);
     padding: 15px 10px; border-radius: 15px 15px 0 0; cursor: pointer;
@@ -123,49 +141,57 @@ body {
 .validation-footer { margin-top: auto; padding-top: 20px; display: flex; justify-content: center; }
 #open-validation-btn {
     width: 100%; background-color: #1a1a1a; color: #f0f0f0; font-family: var(--font-title);
-    font-size: 1.5em; padding: 12px 0; border-radius: 50px; border: 2px solid #333; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    font-size: 1.5em; padding: 12px 0; border-radius: 50px;
+    border: 2px solid #333; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.4);
 }
 #open-validation-btn:active { transform: scale(0.98); }
 
 /* =========================================
-   6. VALIDACIÓN (FIX: Full Screen Background)
+   6. VALIDACIÓN
    ========================================= */
 #validation-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: var(--bg-dark);
-    z-index: 1000;
+    background: var(--bg-dark); z-index: 1000;
     display: flex; justify-content: center;
-    /* Eliminamos padding-top de aquí para que el fondo cubra todo */
-    padding-top: 0; 
-    
     transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 #validation-overlay.visible { transform: translateX(0); }
 
-/* REGLA NUEVA: Fondo rojo aplicado al overlay principal en modo cacería */
+/* Fondo rojo en cacería */
 #validation-overlay.hunt-mode::before {
-    content: '';
+    content: ''; 
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    /* Gradiente rojo oscuro atmósfera */
-    background: radial-gradient(circle at center, rgba(255, 0, 0, 0.4) 0%, rgba(0, 0, 0, 1) 85%);
+    
+    /* Hacemos que el fondo sea el DOBLE del tamaño del contenedor */
+    width: 200%; 
+    height: 200%;
+    
+    /* Lo movemos hacia arriba y a la izquierda para que el centro coincida */
+    top: -50%;
+    left: -50%;
+    
+    /* Gradiente radial ajustado */
+    background: radial-gradient(
+        circle at center, 
+        rgba(255, 0, 0, 0.4) 0%, 
+        rgba(0, 0, 0, 1) 40% 
+    );
+    
     mix-blend-mode: multiply;
-    z-index: 1; /* Encima del fondo negro, debajo del contenido */
+    z-index: 1; 
     pointer-events: none;
+    
+    /* Animación de entrada */
+    opacity: 0; 
+    animation: fadeInAtmosphere 1.5s ease-out forwards;
 }
 
-/* Si tiene la clase hunt-mode, ocultamos el footer global */
+/* Ocultamos el footer global en cacería */
 #validation-overlay.hunt-mode .pentagram-footer { display: none; }
 
 .mobile-layout-limit {
-    width: 100%; max-width: 500px; height: 100%;
-    position: relative;
-    display: flex; flex-direction: column;
-    /* Movemos el padding aquí para proteger el contenido */
-    padding: 20px; 
-    z-index: 10; /* El contenido por encima del fondo rojo */
+    width: 100%; max-width: 500px; height: 100%; position: relative; display: flex; flex-direction: column; padding: 20px; z-index: 10;
 }
-
 #validation-content { flex-grow: 1; display: flex; flex-direction: column; z-index: 10; }
 .val-header { width: 100%; display: flex; margin-bottom: 20px; z-index: 20; }
 .back-btn { background: none; border: none; color: #fff; font-size: 2em; cursor: pointer; }
@@ -200,50 +226,189 @@ body {
     height: 100%; padding-bottom: 20px; position: relative; z-index: 5; overflow: visible;
 }
 
-/* Eliminamos el ::before de hunt-screen-container porque ahora está en validation-overlay */
 .hunt-screen-container::before { display: none; }
 
 .title-hunt {
     font-family: var(--font-horror); font-size: 4em; color: #d32f2f;
     text-shadow: 0 0 10px #000; margin-top: 30px; text-align: center;
-    animation: zoomIn 0.4s ease; position: relative; z-index: 20;
+    animation: zoomInBogus 0.8s ease-out backwards; position: relative; z-index: 20;
 }
 
 .hunt-visual-group { display: contents; }
-
-/* 1. PENTAGRAMA EN CACERÍA */
 .hunt-pentagram-img {
-    position: absolute;
-    bottom: -20px; /* Compensa el padding del contenedor para pegar abajo */
-    left: -20px;   /* Compensa el padding del contenedor para pegar izq */
-    width: calc(100% + 40px); /* Ocupa todo el ancho compensando padding */
-    height: auto;
-    display: block;
-    filter: drop-shadow(0 0 20px #ff0000);
-    opacity: 0.8;
-    z-index: 1;
+    position: absolute; bottom: -20px; left: -20px; width: calc(100% + 40px); height: auto; display: block;
+    filter: drop-shadow(0 0 20px #ff0000); opacity: 0.8; z-index: 1;
+    
+    opacity: 0; 
+    animation: simpleFadeInPentagram 1.5s ease-out 0.5s forwards;
 }
-
-/* 2. FANTASMA */
 .ghost-hunt-img {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     width: 100%; max-width: 500px; height: auto;
-    filter: drop-shadow(0 0 15px #ff000092) drop-shadow(0 0 40px #ff00009c);
-    opacity: 0.9;
+    
+    filter: drop-shadow(0 0 15px #ff0000) drop-shadow(0 0 40px #ff0000);
     z-index: 5;
-    animation: floatGhost 3s ease-in-out infinite;
+    opacity: 0;
+    clip-path: inset(0 0 60% 0);
+    -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+    
+    animation: 
+        ghostEmergeUp 6s cubic-bezier(0.4, 0.0, 0.2, 1) 2.0s forwards,
+        floatGhost 3s ease-in-out infinite 8.0s; 
 }
-
 /* 3. TEXTO */
 .hunt-message-bottom {
-    position: absolute;
-    bottom: 30px; left: 0; width: 100%; padding: 0 20px;
-    font-family: var(--font-hand); font-size: 1.3em; color: #fff;
-    text-align: center; z-index: 20; line-height: 1.4;
+    position: absolute; bottom: 30px; left: 0; width: 100%; padding: 0 20px;
+    font-family: var(--font-hand); font-size: 1.3em; color: #fff; text-align: center; z-index: 20; line-height: 1.4;
+    opacity: 0; 
+    /* Aparece a los 2s */
+    animation: simpleFadeInText 1.5s ease-out 2s forwards;
 }
 .text-red { color: var(--neon-red); font-weight: bold; text-shadow: 0 0 5px var(--neon-red); }
 
-@keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-@keyframes floatGhost { 0%, 100% { transform: translate(-50%, -50%); } 50% { transform: translate(-50%, -55%); } }
+/* =========================================
+   ANIMACIONES
+   ========================================= */
+@keyframes fadeInAtmosphere { to { opacity: 1; } }
+@keyframes simpleFadeInText { to { opacity: 1; } }
+@keyframes simpleFadeInPentagram { to { opacity: 0.8; } }
+
+@keyframes ghostEmergeUp {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 10%) scale(0.8);
+        clip-path: inset(0 0 70% 0);
+        filter: drop-shadow(0 0 5px #ff0000);
+    }
+    100% {
+        opacity: 0.9;
+        transform: translate(-50%, -50%) scale(1);
+        clip-path: inset(0 0 0% 0);
+        filter: drop-shadow(0 0 15px #ff0000) drop-shadow(0 0 40px #ff0000);
+    }
+}
+
+@keyframes floatGhost { 
+    0%, 100% { transform: translate(-50%, -50%); } 
+    50% { transform: translate(-50%, -53%); } 
+}
+
+@keyframes zoomInBogus { 
+    from { transform: scale(1.5); opacity: 0; filter: blur(5px); } 
+    to { transform: scale(1); opacity: 1; filter: blur(0); } 
+}
+
+/* =========================================
+   8. PORTADA DE LIBRO (AJUSTADA PARA MÓVIL)
+   ========================================= */
+
+#book-cover {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 5000; /* Por encima de todo */
+    
+    /* Fondo Color Vino con degradado */
+    background: radial-gradient(circle at center, #7b1e26 0%, #4a0e13 100%);
+    
+    /* Textura de cuero/libro */
+    background-image: 
+        radial-gradient(circle at center, #7b1e26 0%, #4a0e13 100%),
+        url('../assets/papel_textura.png');
+    background-blend-mode: multiply;
+    
+    display: flex; justify-content: center; align-items: center;
+    padding: 0; /* Sin padding extra, lo maneja el borde */
+    
+    transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+}
+
+#book-cover.book-opened {
+    opacity: 0; pointer-events: none; transform: scale(1.1);
+}
+
+/* Marco decorativo dorado */
+.cover-border {
+    /* Ajustado para móviles: deja un margen alrededor */
+    width: 90%; 
+    height: 90%; 
+    max-width: 450px; /* Límite para que no se vea gigante en PC */
+    
+    border: 3px double #cba35e; /* Color oro viejo */
+    border-radius: 15px;
+    
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; /* Centrado vertical perfecto */
+    align-items: center;     /* Centrado horizontal perfecto */
+    
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    position: relative;
+    padding: 20px;
+}
+
+/* Adornos de esquinas */
+.cover-border::before, .cover-border::after {
+    content: ''; position: absolute; width: 40px; height: 40px;
+    border-color: #cba35e; border-style: solid;
+    pointer-events: none;
+}
+.cover-border::before {
+    top: 10px; left: 10px; border-width: 3px 0 0 3px;
+}
+.cover-border::after {
+    bottom: 10px; right: 10px; border-width: 0 3px 3px 0;
+}
+
+.cover-content {
+    width: 100%;
+    text-align: center;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 40px; /* Más espacio entre elementos */
+}
+
+.cover-logo {
+    /* LOGO MÁS GRANDE Y ESTÁTICO */
+    width: 150%;       /* Ocupa bastante ancho del contenedor */
+    max-width: 400px; /* Tamaño máximo aumentado */
+    height: auto;
+    
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.6));
+    
+    /* Animación eliminada como pediste */
+    /* animation: floatGhost 4s ease-in-out infinite; */ 
+}
+
+.cover-title {
+    font-family: var(--font-title);
+    font-size: 2.8em; /* Título un poco más grande */
+    color: #e0cda8;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    margin: 0;
+    line-height: 1.1;
+}
+
+#start-game-btn {
+    background: transparent;
+    border: 2px solid #cba35e;
+    color: #cba35e;
+    font-family: var(--font-title);
+    font-size: 1.5em;
+    padding: 12px 50px; /* Botón más ancho */
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    margin-top: 20px;
+}
+
+#start-game-btn:active {
+    background-color: rgba(203, 163, 94, 0.1);
+    transform: scale(0.95);
+}
