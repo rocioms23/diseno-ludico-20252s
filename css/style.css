@@ -159,31 +159,10 @@ body {
 
 /* Fondo rojo en cacería */
 #validation-overlay.hunt-mode::before {
-    content: ''; 
-    position: absolute;
-    
-    /* Hacemos que el fondo sea el DOBLE del tamaño del contenedor */
-    width: 200%; 
-    height: 200%;
-    
-    /* Lo movemos hacia arriba y a la izquierda para que el centro coincida */
-    top: -50%;
-    left: -50%;
-    
-    /* Gradiente radial ajustado */
-    background: radial-gradient(
-        circle at center, 
-        rgba(255, 0, 0, 0.4) 0%, 
-        rgba(0, 0, 0, 1) 40% 
-    );
-    
-    mix-blend-mode: multiply;
-    z-index: 1; 
-    pointer-events: none;
-    
-    /* Animación de entrada */
-    opacity: 0; 
-    animation: fadeInAtmosphere 1.5s ease-out forwards;
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle at center, rgba(255, 0, 0, 0.4) 0%, rgba(0, 0, 0, 1) 60%);
+    mix-blend-mode: multiply; z-index: 1; pointer-events: none;
+    opacity: 0; animation: fadeInAtmosphere 1.5s ease-out forwards;
 }
 
 /* Ocultamos el footer global en cacería */
@@ -192,7 +171,16 @@ body {
 .mobile-layout-limit {
     width: 100%; max-width: 500px; height: 100%; position: relative; display: flex; flex-direction: column; padding: 20px; z-index: 10;
 }
-#validation-content { flex-grow: 1; display: flex; flex-direction: column; z-index: 10; }
+
+/* --- NUEVA ANIMACIÓN: Fade Out del contenido --- */
+#validation-content { 
+    flex-grow: 1; display: flex; flex-direction: column; z-index: 10;
+    transition: opacity 0.5s ease; /* Transición suave */
+}
+#validation-content.fade-out-active {
+    opacity: 0; /* Estado transparente para la transición */
+}
+
 .val-header { width: 100%; display: flex; margin-bottom: 20px; z-index: 20; }
 .back-btn { background: none; border: none; color: #fff; font-size: 2em; cursor: pointer; }
 .val-grid-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 20px; margin-bottom: 40px; z-index: 20; }
@@ -215,7 +203,11 @@ body {
 /* =========================================
    7. PANTALLAS RESULTADO
    ========================================= */
-.safe-screen-container { display: flex; flex-direction: column; justify-content: space-between; height: 100%; padding-bottom: 40px; position: relative; }
+.safe-screen-container { 
+    display: flex; flex-direction: column; justify-content: space-between; height: 100%; padding-bottom: 40px; position: relative;
+    /* --- NUEVO: Fade In para el resultado Correcto --- */
+    animation: fadeInResult 1s ease-out forwards; 
+}
 .title-safe { font-family: var(--font-horror); font-size: 4em; color: #fff; text-shadow: 0 0 10px #000; margin-top: 20px; text-align: center; }
 .safe-message-bottom { font-family: var(--font-hand); font-size: 1.4em; color: #fff; text-align: center; margin-bottom: 60px; z-index: 20; line-height: 1.4; }
 .text-green { color: var(--neon-green); font-weight: bold; }
@@ -235,19 +227,20 @@ body {
 }
 
 .hunt-visual-group { display: contents; }
+
+/* 1. PENTAGRAMA CACERÍA */
 .hunt-pentagram-img {
     position: absolute; bottom: -20px; left: -20px; width: calc(100% + 40px); height: auto; display: block;
     filter: drop-shadow(0 0 20px #ff0000); opacity: 0.8; z-index: 1;
-    
-    opacity: 0; 
-    animation: simpleFadeInPentagram 1.5s ease-out 0.5s forwards;
+    opacity: 0; animation: simpleFadeInPentagram 1s ease-out 0.5s forwards;
 }
+
+/* 2. FANTASMA */
 .ghost-hunt-img {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     width: 100%; max-width: 500px; height: auto;
-    
     filter: drop-shadow(0 0 15px #ff0000) drop-shadow(0 0 40px #ff0000);
     z-index: 5;
     opacity: 0;
@@ -257,17 +250,49 @@ body {
     
     animation: 
         ghostEmergeUp 6s cubic-bezier(0.4, 0.0, 0.2, 1) 2.0s forwards,
-        floatGhost 3s ease-in-out infinite 8.0s; 
+        floatGhost 3s ease-in-out infinite 7.0s; 
 }
+
 /* 3. TEXTO */
 .hunt-message-bottom {
     position: absolute; bottom: 30px; left: 0; width: 100%; padding: 0 20px;
     font-family: var(--font-hand); font-size: 1.3em; color: #fff; text-align: center; z-index: 20; line-height: 1.4;
-    opacity: 0; 
-    /* Aparece a los 2s */
-    animation: simpleFadeInText 1.5s ease-out 2s forwards;
+    opacity: 0; animation: simpleFadeInText 1.5s ease-out 5s forwards;
 }
 .text-red { color: var(--neon-red); font-weight: bold; text-shadow: 0 0 5px var(--neon-red); }
+
+/* =========================================
+   8. PORTADA DE LIBRO
+   ========================================= */
+#book-cover {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 5000; background: radial-gradient(circle at center, #7b1e26 0%, #4a0e13 100%);
+    background-image: radial-gradient(circle at center, #7b1e26 0%, #4a0e13 100%), url('../assets/papel_textura.png');
+    background-blend-mode: multiply; display: flex; justify-content: center; align-items: center; padding: 0;
+    transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+}
+#book-cover.book-opened { opacity: 0; pointer-events: none; transform: scale(1.1); }
+.cover-border {
+    width: 90%; height: 90%; max-width: 450px; border: 3px double #cba35e; border-radius: 15px;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5); position: relative; padding: 20px;
+}
+.cover-border::before, .cover-border::after {
+    content: ''; position: absolute; width: 40px; height: 40px; border-color: #cba35e; border-style: solid; pointer-events: none;
+}
+.cover-border::before { top: 10px; left: 10px; border-width: 3px 0 0 3px; }
+.cover-border::after { bottom: 10px; right: 10px; border-width: 0 3px 3px 0; }
+.cover-content { width: 100%; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 40px; }
+.cover-logo { width: 150%; max-width: 400px; height: auto; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.6)); }
+.cover-title {
+    font-family: var(--font-title); font-size: 2.8em; color: #e0cda8; text-shadow: 0 2px 4px rgba(0,0,0,0.8); margin: 0; line-height: 1.1;
+}
+#start-game-btn {
+    background: transparent; border: 2px solid #cba35e; color: #cba35e; font-family: var(--font-title);
+    font-size: 1.5em; padding: 12px 50px; border-radius: 5px; cursor: pointer; text-transform: uppercase;
+    letter-spacing: 2px; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); margin-top: 20px;
+}
+#start-game-btn:active { background-color: rgba(203, 163, 94, 0.1); transform: scale(0.95); }
 
 /* =========================================
    ANIMACIONES
@@ -275,140 +300,15 @@ body {
 @keyframes fadeInAtmosphere { to { opacity: 1; } }
 @keyframes simpleFadeInText { to { opacity: 1; } }
 @keyframes simpleFadeInPentagram { to { opacity: 0.8; } }
+@keyframes fadeInResult { from { opacity: 0; } to { opacity: 1; } }
 
 @keyframes ghostEmergeUp {
     0% {
-        opacity: 0;
-        transform: translate(-50%, 10%) scale(0.8);
-        clip-path: inset(0 0 70% 0);
-        filter: drop-shadow(0 0 5px #ff0000);
+        opacity: 0; transform: translate(-50%, 10%) scale(0.8); clip-path: inset(0 0 60% 0); filter: drop-shadow(0 0 5px #ff0000);
     }
     100% {
-        opacity: 0.9;
-        transform: translate(-50%, -50%) scale(1);
-        clip-path: inset(0 0 0% 0);
-        filter: drop-shadow(0 0 15px #ff0000) drop-shadow(0 0 40px #ff0000);
+        opacity: 0.9; transform: translate(-50%, -50%) scale(1); clip-path: inset(0 0 0% 0); filter: drop-shadow(0 0 15px #ff0000) drop-shadow(0 0 40px #ff0000);
     }
 }
-
-@keyframes floatGhost { 
-    0%, 100% { transform: translate(-50%, -50%); } 
-    50% { transform: translate(-50%, -53%); } 
-}
-
-@keyframes zoomInBogus { 
-    from { transform: scale(1.5); opacity: 0; filter: blur(5px); } 
-    to { transform: scale(1); opacity: 1; filter: blur(0); } 
-}
-
-/* =========================================
-   8. PORTADA DE LIBRO (AJUSTADA PARA MÓVIL)
-   ========================================= */
-
-#book-cover {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 5000; /* Por encima de todo */
-    
-    /* Fondo Color Vino con degradado */
-    background: radial-gradient(circle at center, #7b1e26 0%, #4a0e13 100%);
-    
-    /* Textura de cuero/libro */
-    background-image: 
-        radial-gradient(circle at center, #7b1e26 0%, #4a0e13 100%),
-        url('../assets/papel_textura.png');
-    background-blend-mode: multiply;
-    
-    display: flex; justify-content: center; align-items: center;
-    padding: 0; /* Sin padding extra, lo maneja el borde */
-    
-    transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
-}
-
-#book-cover.book-opened {
-    opacity: 0; pointer-events: none; transform: scale(1.1);
-}
-
-/* Marco decorativo dorado */
-.cover-border {
-    /* Ajustado para móviles: deja un margen alrededor */
-    width: 90%; 
-    height: 90%; 
-    max-width: 450px; /* Límite para que no se vea gigante en PC */
-    
-    border: 3px double #cba35e; /* Color oro viejo */
-    border-radius: 15px;
-    
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center; /* Centrado vertical perfecto */
-    align-items: center;     /* Centrado horizontal perfecto */
-    
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-    position: relative;
-    padding: 20px;
-}
-
-/* Adornos de esquinas */
-.cover-border::before, .cover-border::after {
-    content: ''; position: absolute; width: 40px; height: 40px;
-    border-color: #cba35e; border-style: solid;
-    pointer-events: none;
-}
-.cover-border::before {
-    top: 10px; left: 10px; border-width: 3px 0 0 3px;
-}
-.cover-border::after {
-    bottom: 10px; right: 10px; border-width: 0 3px 3px 0;
-}
-
-.cover-content {
-    width: 100%;
-    text-align: center;
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    gap: 40px; /* Más espacio entre elementos */
-}
-
-.cover-logo {
-    /* LOGO MÁS GRANDE Y ESTÁTICO */
-    width: 150%;       /* Ocupa bastante ancho del contenedor */
-    max-width: 400px; /* Tamaño máximo aumentado */
-    height: auto;
-    
-    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.6));
-    
-    /* Animación eliminada como pediste */
-    /* animation: floatGhost 4s ease-in-out infinite; */ 
-}
-
-.cover-title {
-    font-family: var(--font-title);
-    font-size: 2.8em; /* Título un poco más grande */
-    color: #e0cda8;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-    margin: 0;
-    line-height: 1.1;
-}
-
-#start-game-btn {
-    background: transparent;
-    border: 2px solid #cba35e;
-    color: #cba35e;
-    font-family: var(--font-title);
-    font-size: 1.5em;
-    padding: 12px 50px; /* Botón más ancho */
-    border-radius: 5px;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    transition: all 0.3s;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    margin-top: 20px;
-}
-
-#start-game-btn:active {
-    background-color: rgba(203, 163, 94, 0.1);
-    transform: scale(0.95);
-}
+@keyframes floatGhost { 0%, 100% { transform: translate(-50%, -50%); } 50% { transform: translate(-50%, -53%); } }
+@keyframes zoomInBogus { from { transform: scale(1.5); opacity: 0; filter: blur(5px); } to { transform: scale(1); opacity: 1; filter: blur(0); } }
