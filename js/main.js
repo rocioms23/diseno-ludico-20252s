@@ -271,7 +271,6 @@ window.doVerify = function () {
 
         } else {
 
-
             if (!gameState.incorrectEvidence.includes(selectedEv)) gameState.incorrectEvidence.push(selectedEv);
                 if(gameState.primeraRonda){
                     contenido = `<h1 class="title-hunt">CUIDADO</h1>
