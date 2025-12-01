@@ -86,6 +86,45 @@ body {
 /* =========================================
    4. TARJETAS DE HABITACIÓN
    ========================================= */
+/* Texto de aviso (estilo igual a 'Registro de habitaciones') */
+.ghost-location-text {
+    font-family: var(--font-body); /* Misma fuente Serif */
+    font-style: italic;            /* Cursiva igual que el h2 */
+    color: #000000;                /* Negro tinta */
+    font-size: 1.2em;
+    margin-top: 10px;
+    line-height: 1.4;
+    text-shadow: none;             /* Quitamos sombra para que se vea nítido */
+    animation: textFadeIn 2s ease-out;
+}
+
+/* Estilo específico para el nombre de la habitación */
+.ghost-room-highlight {
+    color: #720e0e; /* Un rojo sangre mucho más oscuro */
+    font-weight: bold;
+    font-style: normal; /* Quitamos cursiva para que destaque más */
+    font-size: 1.1em;
+    text-transform: uppercase; /* Opcional: queda muy bien en mayúsculas */
+}
+
+@keyframes textFadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Borde y efecto rojo para la tarjeta de la habitación (SIN CAMBIOS) */
+.room-card.haunted-room {
+    border: 2px solid #ff3333;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+    animation: hauntedPulse 3s infinite;
+}
+
+@keyframes hauntedPulse {
+    0% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.2); border-color: #ff3333; }
+    50% { box-shadow: 0 0 25px rgba(255, 0, 0, 0.6); border-color: #ff0000; }
+    100% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.2); border-color: #ff3333; }
+}
+
 .room-card {
     border-radius: 12px; overflow: hidden; margin-bottom: 15px;
     background-color: #000; border: 1px solid #333; box-shadow: 0 3px 8px rgba(0,0,0,0.3);
@@ -100,7 +139,7 @@ body {
 .room-grid { display: flex; flex-direction: column; gap: 6px; }
 .player-row {
     display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch;
-    background-color: rgba(0, 0, 0, 0.7); border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.34); border-radius: 32px;
     border: 1px solid rgba(255,255,255,0.1); height: 48px;
 }
 .action-zone { display: flex; align-items: center; padding: 0 10px; cursor: pointer; position: relative; }
@@ -112,9 +151,6 @@ body {
 .status-icon { width: 28px; height: 28px; object-fit: contain; filter: drop-shadow(0 0 2px rgba(0,0,0,0.8)); opacity: 0.2; transform: scale(0.9); transition: all 0.2s; }
 .status-icon.active { opacity: 1; transform: scale(1.1); }
 
-/* =========================================
-   5. SECCIÓN DE PISTAS
-   ========================================= */
 .clues-notebook-section {
     margin-bottom: 25px; padding: 10px;
     background-color: rgba(255, 255, 255, 0.25); border: 2px solid #666;
@@ -252,6 +288,21 @@ body {
         ghostEmergeUp 6s cubic-bezier(0.4, 0.0, 0.2, 1) 2.0s forwards,
         floatGhost 3s ease-in-out infinite 7.0s; 
 }
+
+.ghost-warn-img{
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%; max-width: 500px; height: auto;
+    filter: drop-shadow(0 0 15px #ff0000) drop-shadow(0 0 40px #ff0000);
+    z-index: 5;
+    opacity: 0;
+    clip-path: inset(0 0 60% 0);
+    animation: 
+        ghostEmergeUp 6s cubic-bezier(0.4, 0.0, 0.2, 1) 2.0s forwards,
+        floatGhost 3s ease-in-out infinite 7.0s; 
+}
+
 
 /* 3. TEXTO */
 .hunt-message-bottom {

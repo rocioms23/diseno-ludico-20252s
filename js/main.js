@@ -10,16 +10,18 @@ const ROOM_DATA = [
     { name: "Dormitorio 3", img: "habitacion_3.png" },
     { name: "Baño 1", img: "bano_1.png" },
     { name: "Baño 2", img: "bano_2.png" },
+    { name: "Baño 3", img: "bano_3.png" },
     { name: "Invernadero", img: "invernadero.png" },
     { name: "Cripta", img: "cripta.png" },
     { name: "Sótano", img: "sotano.png" },
     { name: "Garage", img: "garage.png" }
 ];
 
+
 const SAFE_ROOMS = [
-    "Biblioteca", 
-    "Baño 1", 
-    "Dormitorio 2", 
+    "Biblioteca",
+    "Baño 1",
+    "Dormitorio 2",
     "Sala de Estudio"
 ];
 
@@ -32,7 +34,7 @@ const GHOST_DATA = [
 ];
 
 const EVIDENCE_TYPES = [
-    "EMF", "DOTS", "TEMPERATURA", "CAJA ESPECTRAL", 
+    "EMF", "DOTS", "TEMPERATURA", "CAJA ESPECTRAL",
     "ULTRAVIOLETA", "LIBRO", "ORBES", "MICRÓFONO PARABÓLICO"
 ];
 
@@ -58,10 +60,11 @@ const PLAYER_COLORS = ['var(--p1)', 'var(--p2)', 'var(--p3)', 'var(--p4)'];
 const ICONS = { clues: 'assets/iconos/pista_boton.png', protection: 'assets/iconos/proteccion_boton.png' };
 
 let gameState = {
-    visits: {}, 
+    visits: {},
     validatedEvidence: [],
     incorrectEvidence: [],
-    secretGhost: null
+    secretGhost: null,
+    primeraRonda: true
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -78,13 +81,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
 function initGame() {
+    // 1. Elegir Fantasma
     const rnd = Math.floor(Math.random() * GHOST_DATA.length);
     gameState.secretGhost = GHOST_DATA[rnd];
+
+    // 2. Elegir Habitación del Fantasma
+    const rndRoomIndex = Math.floor(Math.random() * ROOM_DATA.length);
+    gameState.ghostRoomName = ROOM_DATA[rndRoomIndex].name;
+
+    // 3. Mostrar mensaje en el DOM (ACTUALIZADO)
+    const msgElement = document.getElementById('ghost-location-msg');
+    if (msgElement) {
+        // Usamos la clase .ghost-room-highlight definida en CSS
+        msgElement.innerHTML = `Se cree que el fantasma se encuentra en:<br><span class="ghost-room-highlight">${gameState.ghostRoomName}</span>`;
+    }
+
+    // Inicializar visitas
     ROOM_DATA.forEach(r => {
         gameState.visits[r.name] = { clues: [0, 0, 0, 0], protection: [0, 0, 0, 0] };
     });
+
     renderRooms();
     renderClues();
 }
@@ -101,11 +118,15 @@ function initTabs() {
         });
     });
 }
-
 function renderRooms() {
     const container = document.getElementById('room-list');
     container.innerHTML = ROOM_DATA.map(room => {
         const isSafeRoom = SAFE_ROOMS.includes(room.name);
+
+        // VERIFICAR SI ES LA HABITACIÓN DEL FANTASMA (NUEVO)
+        const isHaunted = room.name === gameState.ghostRoomName;
+        const extraClass = isHaunted ? 'haunted-room' : '';
+
         let playersHtml = '';
         for (let i = 0; i < 4; i++) {
             const hasClue = gameState.visits[room.name].clues[i] === 1;
@@ -136,7 +157,7 @@ function renderRooms() {
             }
         }
         return `
-            <div class="room-card" style="background-image: url('assets/losetas/${room.img}');">
+            <div class="room-card ${extraClass}" style="background-image: url('assets/losetas/${room.img}');">
                 <div class="room-overlay-bg">
                     <div class="room-header-card"><span class="room-name">${room.name}</span></div>
                     <div class="room-grid">${playersHtml}</div>
@@ -145,7 +166,7 @@ function renderRooms() {
     }).join('');
 }
 
-window.toggleAction = function(roomName, playerIndex, type) {
+window.toggleAction = function (roomName, playerIndex, type) {
     const currentValue = gameState.visits[roomName][type][playerIndex];
     gameState.visits[roomName][type][playerIndex] = 1 - currentValue;
     renderRooms();
@@ -163,8 +184,6 @@ function renderClues() {
 
     const ghContainer = document.getElementById('ghost-grid');
     ghContainer.innerHTML = GHOST_DATA.map(g => {
-        // CAMBIO: Solo se descarta si una evidencia VALIDADA no coincide.
-        // Las incorrectas NO descartan fantasmas.
         const ruledOut = gameState.validatedEvidence.some(e => !g.evidence.includes(e));
         return `<div class="handwritten-item ${ruledOut ? 'ruled-out' : ''}">${g.name}</div>`;
     }).join('');
@@ -184,10 +203,10 @@ function initValidation() {
 function resetValidation() {
     selectedEv = null;
     const content = document.getElementById('validation-content');
-    
+
     // Restaurar opacidad por si viene de un fade-out
     content.classList.remove('fade-out-active');
-    
+
     const btns = VALIDATION_ORDER.map(ev => {
         const displayName = EVIDENCE_VALIDATION_NAMES[ev];
         const dis = gameState.validatedEvidence.includes(ev) || gameState.incorrectEvidence.includes(ev);
@@ -214,31 +233,31 @@ function resetValidation() {
     });
 }
 
-window.closeVal = function() {
+window.closeVal = function () {
     const overlay = document.getElementById('validation-overlay');
     overlay.classList.remove('visible');
     overlay.classList.remove('hunt-mode');
     renderClues();
 };
 
-window.doVerify = function() {
+window.doVerify = function () {
     if (!selectedEv) return;
-    
+
     const content = document.getElementById('validation-content');
-    
+
     // 1. Iniciar Fade Out
     content.classList.add('fade-out-active');
-    
+
     // 2. Esperar a que termine el fade out (0.5s en CSS)
     setTimeout(() => {
         const isCorrect = gameState.secretGhost.evidence.includes(selectedEv);
         const overlay = document.getElementById('validation-overlay');
-        
+
         // Lógica del juego
         if (isCorrect) {
             if (!gameState.validatedEvidence.includes(selectedEv)) gameState.validatedEvidence.push(selectedEv);
             overlay.classList.remove('hunt-mode');
-            
+
             // HTML Pantalla A SALVO
             content.innerHTML = `
                 <div class="val-header"><button class="back-btn" onclick="closeVal()"><i class="fas fa-chevron-left"></i></button></div>
@@ -249,16 +268,27 @@ window.doVerify = function() {
                         El fantasma permanece tranquilo...
                     </p>
                 </div>`;
-                
+
         } else {
+
+
             if (!gameState.incorrectEvidence.includes(selectedEv)) gameState.incorrectEvidence.push(selectedEv);
-            overlay.classList.add('hunt-mode'); 
-            
-            // HTML Pantalla CACERÍA
-            content.innerHTML = `
-                <div class="val-header"><button class="back-btn" onclick="closeVal()"><i class="fas fa-chevron-left"></i></button></div>
-                <div class="hunt-screen-container">
-                    <h1 class="title-hunt">CACERÍA</h1>
+                if(gameState.primeraRonda){
+                    contenido = `<h1 class="title-hunt">CUIDADO</h1>
+                    <div class="hunt-visual-group">
+                        <img src="assets/validacion/Fantasma.png" class="ghost-warn-img" alt="Fantasma">
+                        <img src="assets/validacion/pentagrama.png" class="hunt-pentagram-img" alt="Pentagrama">
+                    </div>
+                    <p class="hunt-message-bottom">
+                        Has ingresado una pista <span class="text-red">incorrecta</span>...<br>
+                        La ira del fantasma crece... A partir de ahora <br>
+                        ya no pasará por alto las pistas erróneas e irá por vosotros...
+                    </p>`
+                    gameState.primeraRonda=false
+                }
+                else{
+                   
+                    contenido = `<h1 class="title-hunt">CACERÍA</h1>
                     <div class="hunt-visual-group">
                         <img src="assets/validacion/Fantasma.png" class="ghost-hunt-img" alt="Fantasma">
                         <img src="assets/validacion/pentagrama.png" class="hunt-pentagram-img" alt="Pentagrama">
@@ -267,12 +297,20 @@ window.doVerify = function() {
                         Has ingresado una pista <span class="text-red">incorrecta</span>...<br>
                         Y desembocado la ira del fantasma.<br>
                         Empieza la cacería...
-                    </p>
+                    </p>`
+                }
+                overlay.classList.add('hunt-mode');
+                // HTML Pantalla CACERÍA
+                content.innerHTML = `
+                <div class="val-header"><button class="back-btn" onclick="closeVal()"><i class="fas fa-chevron-left"></i></button></div>
+                <div class="hunt-screen-container">
+                    ${contenido}
                 </div>`;
+
         }
-        
+
         // 3. Quitar fade out (Fade In implícito al aparecer el nuevo contenido con opacidad normal)
         content.classList.remove('fade-out-active');
-        
+
     }, 500); // 500ms coincide con la transición CSS
 };
