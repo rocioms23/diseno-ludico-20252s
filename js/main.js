@@ -112,6 +112,24 @@ function initGame() {
 
     renderRooms();
     renderClues();
+    preloadImages();
+}
+
+function preloadImages() {
+    const imagesToLoad = [
+        "assets/validacion/marco_puerta2.png",
+        "assets/validacion/Fantasma.png",
+        "assets/validacion/pentagrama.png",
+        "assets/botones/verificar.png",
+
+        ...Object.values(EVIDENCE_ASSETS).map(filename => `assets/botones/${filename}`)
+    ];
+
+    imagesToLoad.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+    console.log("Imágenes precargadas en memoria.");
 }
 
 function initTabs() {
@@ -311,7 +329,7 @@ window.doVerify = function () {
 
                  <img src="assets/validacion/pentagrama.png" class="pentagram-floor" alt="Pentagrama">
 
-                 <img src="assets/validacion/Fantasma.png" class="ghost-in-door-centered" alt="Fantasma">
+                 <img src="assets/validacion/Fantasma2.png" class="ghost-in-door-centered" alt="Fantasma">
             </div>
 
             <h1 class="title-escape">¡ESCAPA!</h1>
@@ -344,6 +362,7 @@ window.doVerify = function () {
         else if (selectedEv) {
             const isCorrect = gameState.secretGhost.evidence.includes(selectedEv);
             if (isCorrect) {
+                if (gameState.primeraRonda) gameState.primeraRonda = false;
                 if (!gameState.validatedEvidence.includes(selectedEv)) gameState.validatedEvidence.push(selectedEv);
                 overlay.classList.remove('hunt-mode');
                 content.innerHTML = `
