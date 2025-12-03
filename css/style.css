@@ -1,19 +1,15 @@
-/* =========================================
-   1. VARIABLES Y CONFIGURACIÓN GENERAL
-   ========================================= */
+
 :root {
     --bg-paper: #d8c8b0; 
     --bg-tab-inactive: #b3a088;
     --text-ink: #1a1a1a;
     
-    /* Colores y Temática */
     --bg-dark: #050505; 
     --neon-red: #ff0000;
     --neon-green: #66ff66;
     
     --p1: #66FF66; --p2: #FF3333; --p3: #3333FF; --p4: #FFFF33;
     
-    /* Fuentes */
     --font-title: 'IM Fell English SC', serif;
     --font-body: 'Lora', serif;
     --font-hand: 'Kalam', cursive;
@@ -41,11 +37,8 @@ body {
     position: relative;
 }
 
-/* =========================================
-   2. PESTAÑAS
-   ========================================= */
 #folder-tabs {
-    display: flex; padding: 10px 10px 0 10px; margin-bottom: -4px; position: relative; z-index: 20; flex-shrink: 0;
+    display: flex; padding: 10px 10px 0 10px; margin-bottom: -4px; position: relative; z-index: 5; flex-shrink: 0;
 }
 .folder-tab {
     flex: 1; border: none; background-color: var(--bg-tab-inactive);
@@ -65,9 +58,6 @@ body {
 }
 .folder-tab.active .tab-icon { opacity: 1; }
 
-/* =========================================
-   3. HOJA DE PAPEL
-   ========================================= */
 #paper-sheet {
     background-color: var(--bg-paper); flex-grow: 1; display: flex; flex-direction: column;
     border-radius: 0; box-shadow: 0 0 20px rgba(0,0,0,0.8); padding: 20px 15px; position: relative; z-index: 15;
@@ -83,28 +73,23 @@ body {
 .tab-content.active { display: flex; }
 @keyframes fadeContent { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-/* =========================================
-   4. TARJETAS DE HABITACIÓN
-   ========================================= */
-/* Texto de aviso (estilo igual a 'Registro de habitaciones') */
 .ghost-location-text {
-    font-family: var(--font-body); /* Misma fuente Serif */
-    font-style: italic;            /* Cursiva igual que el h2 */
-    color: #000000;                /* Negro tinta */
+    font-family: var(--font-body); 
+    font-style: italic;            
+    color: #000000;                
     font-size: 1.2em;
     margin-top: 10px;
     line-height: 1.4;
-    text-shadow: none;             /* Quitamos sombra para que se vea nítido */
+    text-shadow: none;          
     animation: textFadeIn 2s ease-out;
 }
 
-/* Estilo específico para el nombre de la habitación */
 .ghost-room-highlight {
-    color: #720e0e; /* Un rojo sangre mucho más oscuro */
+    color: #720e0e;
     font-weight: bold;
-    font-style: normal; /* Quitamos cursiva para que destaque más */
+    font-style: normal;
     font-size: 1.1em;
-    text-transform: uppercase; /* Opcional: queda muy bien en mayúsculas */
+    text-transform: uppercase;
 }
 
 @keyframes textFadeIn {
@@ -182,9 +167,6 @@ body {
 }
 #open-validation-btn:active { transform: scale(0.98); }
 
-/* =========================================
-   6. VALIDACIÓN
-   ========================================= */
 #validation-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: var(--bg-dark); z-index: 1000;
@@ -193,7 +175,6 @@ body {
 }
 #validation-overlay.visible { transform: translateX(0); }
 
-/* Fondo rojo en cacería */
 #validation-overlay.hunt-mode::before {
     content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
     background: radial-gradient(circle at center, rgba(255, 0, 0, 0.4) 0%, rgba(0, 0, 0, 1) 60%);
@@ -201,20 +182,18 @@ body {
     opacity: 0; animation: fadeInAtmosphere 1.5s ease-out forwards;
 }
 
-/* Ocultamos el footer global en cacería */
 #validation-overlay.hunt-mode .pentagram-footer { display: none; }
 
 .mobile-layout-limit {
     width: 100%; max-width: 500px; height: 100%; position: relative; display: flex; flex-direction: column; padding: 20px; z-index: 10;
 }
 
-/* --- NUEVA ANIMACIÓN: Fade Out del contenido --- */
 #validation-content { 
     flex-grow: 1; display: flex; flex-direction: column; z-index: 10;
-    transition: opacity 0.5s ease; /* Transición suave */
+    transition: opacity 0.5s ease; 
 }
 #validation-content.fade-out-active {
-    opacity: 0; /* Estado transparente para la transición */
+    opacity: 0; 
 }
 
 .val-header { width: 100%; display: flex; margin-bottom: 20px; z-index: 20; }
@@ -230,18 +209,13 @@ body {
 }
 #verify-btn:active { transform: scale(0.95) rotate(-1deg); }
 
-/* Footer Global Pentagrama */
 .pentagram-footer {
     position: absolute; bottom: 0; left: 0; width: 100%; display: flex; justify-content: center; align-items: flex-end; pointer-events: none; opacity: 0.6; z-index: 1;
 }
 .pentagram-footer img { width: 100%; height: auto; display: block; filter: drop-shadow(0 0 15px rgba(255,0,0,0.3)); }
 
-/* =========================================
-   7. PANTALLAS RESULTADO
-   ========================================= */
 .safe-screen-container { 
     display: flex; flex-direction: column; justify-content: space-between; height: 100%; padding-bottom: 40px; position: relative;
-    /* --- NUEVO: Fade In para el resultado Correcto --- */
     animation: fadeInResult 1s ease-out forwards; 
 }
 .title-safe { font-family: var(--font-horror); font-size: 4em; color: #fff; text-shadow: 0 0 10px #000; margin-top: 20px; text-align: center; }
@@ -345,9 +319,6 @@ body {
 }
 #start-game-btn:active { background-color: rgba(203, 163, 94, 0.1); transform: scale(0.95); }
 
-/* =========================================
-   ANIMACIONES
-   ========================================= */
 @keyframes fadeInAtmosphere { to { opacity: 1; } }
 @keyframes simpleFadeInText { to { opacity: 1; } }
 @keyframes simpleFadeInPentagram { to { opacity: 0.8; } }
@@ -363,3 +334,145 @@ body {
 }
 @keyframes floatGhost { 0%, 100% { transform: translate(-50%, -50%); } 50% { transform: translate(-50%, -53%); } }
 @keyframes zoomInBogus { from { transform: scale(1.5); opacity: 0; filter: blur(5px); } to { transform: scale(1); opacity: 1; filter: blur(0); } }
+
+.handwritten-item.selected-ghost {
+    color: var(--neon-red);
+    transform: scale(1.1) rotate(-2deg);
+    z-index: 10;
+}
+.handwritten-item.selected-ghost::after {
+    content: '';
+    position: absolute;
+    left: -20%; top: -20%; width: 140%; height: 140%;
+    border: 4px solid var(--neon-red);
+    border-radius: 55% 65% 45% 55% / 60% 50% 60% 50%;
+    transform: rotate(-5deg);
+    opacity: 0.9;
+    pointer-events: none;
+    filter: drop-shadow(0 0 5px var(--neon-red));
+    animation: handwrittenCirclePulse 2s ease-in-out infinite;
+}
+
+@keyframes handwrittenCirclePulse {
+    0%, 100% { transform: rotate(-5deg) scale(1); opacity: 0.9; }
+    50% { transform: rotate(-5deg) scale(1.05); opacity: 1; }
+}
+
+.escape-screen-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.back-btn-fixed {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2.5em; 
+    cursor: pointer;
+    z-index: 100; 
+    filter: drop-shadow(0 0 5px #000); 
+}
+.door-frame-fullscreen {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 10; 
+}
+
+.door-opening-zone {
+    position: absolute;
+    z-index: 1;
+    overflow: hidden;
+    top: 20%;      
+    left: 20%;     
+    width: 100%;    
+    height: 68%;
+}
+.blinking-light-bg-full {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: #ff0000;
+    opacity: 0.6;
+    animation: dangerBlinkFull 5s infinite alternate;
+    z-index: 1;
+}
+
+.pentagram-floor {
+    position: absolute;
+    z-index: 0; 
+    opacity: 1;
+    filter: drop-shadow(0 0 10px #ff0000);
+    width: 40%;
+    left: 10%;
+    transform: rotateX(30deg);
+    bottom: 20%;
+    
+}
+.ghost-in-door-centered {
+    position: absolute;
+    z-index: 3; 
+    top: 20%;
+    left: 25%;
+    transform: translateX(-50%);
+    opacity: 0.9;
+    
+    width: auto;
+    height: 70%; 
+    filter: drop-shadow(0 0 15px #000); 
+    animation: ghostJitter 0.1s infinite;
+}
+
+.title-escape {
+    position: relative;
+    z-index: 50;
+    margin-top: 10vh;
+    font-family: var(--font-horror);
+    font-size: 5em;
+    color: #ff0000;
+    text-shadow: 
+        2px 2px 0 #000, 
+        -1px -1px 0 #000,  
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000,
+        0 0 20px #ff0000;
+    animation: flickerText 0.2s infinite;
+    text-align: center;
+}
+
+.escape-message-bottom {
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    text-align: center;
+    font-family: var(--font-hand);
+    font-size: 1.4em;
+    color: #fff;
+    z-index: 50;
+    padding: 0 20px;
+    text-shadow: 0 0 10px #000, 0 0 20px #000, 0 0 5px #000;
+}
+
+.text-red-glow {
+    color: #ff3333;
+    font-weight: bold;
+    text-shadow: 0 0 10px #ff0000;
+}
+
+@keyframes dangerBlinkFull {
+    0% { opacity: 0.3; }
+    100% { opacity: 0.8; }
+}
+
+#validation-overlay.escape-mode .pentagram-footer {
+    display: none !important;
+}
+
+#validation-overlay.escape-mode .mobile-layout-limit {
+    width: 100% !important; max-width: none !important; padding: 0 !important; margin: 0 !important;
+}
