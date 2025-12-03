@@ -252,8 +252,6 @@ window.doVerify = function () {
     setTimeout(() => {
         const isCorrect = gameState.secretGhost.evidence.includes(selectedEv);
         const overlay = document.getElementById('validation-overlay');
-
-        // Lógica del juego
         if (isCorrect) {
             if (!gameState.validatedEvidence.includes(selectedEv)) gameState.validatedEvidence.push(selectedEv);
             overlay.classList.remove('hunt-mode');
@@ -286,7 +284,6 @@ window.doVerify = function () {
                     gameState.primeraRonda=false
                 }
                 else{
-                   
                     contenido = `<h1 class="title-hunt">CACERÍA</h1>
                     <div class="hunt-visual-group">
                         <img src="assets/validacion/Fantasma.png" class="ghost-hunt-img" alt="Fantasma">
@@ -305,7 +302,6 @@ window.doVerify = function () {
                 <div class="hunt-screen-container">
                     ${contenido}
                 </div>`;
-
         }
 
         // 3. Quitar fade out (Fade In implícito al aparecer el nuevo contenido con opacidad normal)
