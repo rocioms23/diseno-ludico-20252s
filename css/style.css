@@ -198,9 +198,80 @@ body {
 
 .val-header { width: 100%; display: flex; margin-bottom: 20px; z-index: 20; }
 .back-btn { background: none; border: none; color: #fff; font-size: 2em; cursor: pointer; }
-.val-grid-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 20px; margin-bottom: 40px; z-index: 20; }
-.val-option {
-    border: 2px solid #fff; border-radius: 50%; background: transparent; color: var(--neon-red); font-family: var(--font-hand); font-size: 1.1em; font-weight: 700; text-transform: uppercase; cursor: pointer; width: 100px; height: 60px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 5px rgba(0,0,0,0.5); transition: 0.1s;
+.val-grid-images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0px; 
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 0;
+    width: 100%;
+    overflow-y: visible;
+}
+
+.val-img-wrapper {
+    width: 32%;
+    
+    max-width: 160px; 
+    
+    min-width: 85px;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    filter: sepia(0.3) brightness(0.9);
+    
+    /* Un poco de margen negativo vertical para juntar las filas si es necesario */
+    margin-bottom: 2px;
+}
+
+.val-img-btn {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+}
+
+/* --- ESTADOS (Hover, Selected, Disabled) --- */
+.val-img-wrapper:hover {
+    transform: scale(1.05);
+    filter: sepia(0) brightness(1.1);
+    z-index: 15;
+}
+
+.val-img-wrapper.selected {
+    transform: scale(1.1); 
+    z-index: 10;
+    filter: brightness(1.2) drop-shadow(0 0 8px #ff0000);
+}
+
+.val-img-wrapper.disabled {
+    opacity: 0.3; 
+    pointer-events: none;
+    filter: grayscale(1);
+}
+
+/* --- BOTÓN VERIFICAR (Ajustado) --- */
+.verify-action-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px; /* Menos margen arriba para acercarlo a los botones */
+    margin-bottom: 20px; 
+    width: 100%;
+    z-index: 20;
+}
+
+#verify-img-btn {
+    width: 100%;
+    max-width: 280px;
+    cursor: pointer;
+    transition: transform 0.1s;
+    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.5));
+}
+
+#verify-img-btn:active {
+    transform: scale(0.95);
 }
 .val-option.selected { background-color: rgba(255, 0, 0, 0.15); box-shadow: 0 0 15px var(--neon-red), inset 0 0 10px var(--neon-red); border-color: var(--neon-red); color: #fff; }
 .val-option:disabled { opacity: 0.3; border-color: #444; color: #444; }

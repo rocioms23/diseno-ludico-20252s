@@ -37,6 +37,16 @@ const EVIDENCE_TYPES = [
     "EMF", "DOTS", "TEMPERATURA", "CAJA ESPECTRAL",
     "ULTRAVIOLETA", "LIBRO", "ORBES", "MICRÓFONO PARABÓLICO"
 ];
+const EVIDENCE_ASSETS = {
+    "EMF": "emf.png",  
+    "DOTS": "proyector_dots.png",
+    "TEMPERATURA": "termometro.png", 
+    "CAJA ESPECTRAL": "caja_espectral.png",
+    "ULTRAVIOLETA": "ultravioleta.png", 
+    "LIBRO": "libro_de_escritura_fantasma.png",
+    "ORBES": "orbes_espectrales.png",
+    "MICRÓFONO PARABÓLICO": "microfono_parabolico.png"
+};
 
 const EVIDENCE_DISPLAY_NAMES = {
     "EMF": "EMF", "DOTS": "DOTS", "TEMPERATURA": "Temperatura",
@@ -220,35 +230,46 @@ function initValidation() {
         }
     });
 }
-
 function resetValidation() {
     selectedEv = null;
     const content = document.getElementById('validation-content');
     content.classList.remove('fade-out-active');
 
     const btns = VALIDATION_ORDER.map(ev => {
-        const displayName = EVIDENCE_VALIDATION_NAMES[ev];
-        const dis = gameState.validatedEvidence.includes(ev) || gameState.incorrectEvidence.includes(ev);
-        let style = "";
-        if (displayName.length > 11) style = "font-size: 0.85em; line-height: 1;";
-        return `<button class="val-option" style="${style}" data-ev="${ev}" ${dis ? 'disabled' : ''}>${displayName}</button>`;
-    }).join('');
+        const imageName = EVIDENCE_ASSETS[ev];
+        const isDisabled = gameState.validatedEvidence.includes(ev) || gameState.incorrectEvidence.includes(ev);
+        const disabledClass = isDisabled ? 'disabled' : '';
 
+        if (!imageName) return ``;
+
+        return `
+            <div class="val-img-wrapper ${disabledClass}" data-ev="${ev}">
+                <img src="assets/botones/${imageName}" alt="${ev}" class="val-img-btn">
+            </div>
+        `;
+    }).join('');
     content.innerHTML = `
         <div class="val-header">
             <button class="back-btn" onclick="closeVal()"><i class="fas fa-chevron-left"></i></button>
         </div>
-        <div class="val-grid-container">${btns}</div>
-        <button id="verify-btn" onclick="doVerify()">Verificar</button>
+        
+        <div class="val-grid-images">
+            ${btns}
+        </div>
+        
+        <div class="verify-action-container">
+            <img src="assets/botones/verificar.png" id="verify-img-btn" onclick="doVerify()" alt="Verificar">
+        </div>
     `;
 
-    content.querySelectorAll('.val-option').forEach(b => {
-        b.addEventListener('click', (e) => {
-            const target = e.target.closest('.val-option');
-            content.querySelectorAll('.val-option').forEach(x => x.classList.remove('selected'));
-            target.classList.add('selected');
-            selectedEv = target.dataset.ev;
-        });
+    content.querySelectorAll('.val-img-wrapper').forEach(wrapper => {
+        if (!wrapper.classList.contains('disabled')) {
+            wrapper.addEventListener('click', (e) => {
+                content.querySelectorAll('.val-img-wrapper').forEach(x => x.classList.remove('selected'));
+                wrapper.classList.add('selected');
+                selectedEv = wrapper.dataset.ev;
+            });
+        }
     });
 }
 
