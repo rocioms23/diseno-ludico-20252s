@@ -346,7 +346,7 @@ window.doVerify = function () {
                     <div class="hunt-screen-container">
                          <h1 class="title-hunt">CACERÍA</h1>
                         <div class="hunt-visual-group">
-                            <img src="assets/validacion/Fantasma.png" class="ghost-hunt-img" alt="Fantasma">
+                            <img src="assets/validacion/Fantasma2.png" class="ghost-hunt-img" alt="Fantasma">
                             <img src="assets/validacion/pentagrama.png" class="hunt-pentagram-img" alt="Pentagrama">
                         </div>
                         <p class="hunt-message-bottom">
@@ -381,7 +381,7 @@ window.doVerify = function () {
                 if (gameState.primeraRonda) {
                     contenido = `<h1 class="title-hunt">CUIDADO</h1>
                     <div class="hunt-visual-group">
-                        <img src="assets/validacion/Fantasma.png" class="ghost-warn-img" alt="Fantasma">
+                        <img src="assets/validacion/Fantasma2.png" class="ghost-warn-img" alt="Fantasma">
                         <img src="assets/validacion/pentagrama.png" class="hunt-pentagram-img" alt="Pentagrama">
                     </div>
                     <p class="hunt-message-bottom">
@@ -393,7 +393,7 @@ window.doVerify = function () {
                 } else {
                     contenido = `<h1 class="title-hunt">CACERÍA</h1>
                     <div class="hunt-visual-group">
-                        <img src="assets/validacion/Fantasma.png" class="ghost-hunt-img" alt="Fantasma">
+                        <img src="assets/validacion/Fantasma2.png" class="ghost-hunt-img" alt="Fantasma">
                         <img src="assets/validacion/pentagrama.png" class="hunt-pentagram-img" alt="Pentagrama">
                     </div>
                     <p class="hunt-message-bottom">

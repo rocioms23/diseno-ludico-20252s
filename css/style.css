@@ -312,7 +312,7 @@ body {
 .hunt-visual-group { display: contents; }
 
 .hunt-pentagram-img {
-    position: absolute; bottom: -20px; left: -20px; width: calc(100% + 40px); height: auto; display: block;
+    position: absolute; bottom: -50px; left: -20px; width: calc(100% + 40px); height: auto; display: block;
     filter: drop-shadow(0 0 20px #ff0000); opacity: 0.8; z-index: 1;
     opacity: 0; animation: simpleFadeInPentagram 1s ease-out 0.5s forwards;
 }
@@ -320,7 +320,7 @@ body {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 100%; max-width: 500px; height: auto;
+    width: 100%;  height: auto;
     filter: drop-shadow(0 0 15px #ff0000) drop-shadow(0 0 40px #ff0000);
     z-index: 5;
     opacity: 0;
