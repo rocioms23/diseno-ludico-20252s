@@ -393,7 +393,8 @@ window.doVerify = function () {
                 } else {
                     contenido = `<h1 class="title-hunt">CACERÍA</h1>
                     <div class="hunt-visual-group">
-                        <img src="assets/validacion/Fantasma2.png" class="ghost-hunt-img" alt="Fantasma">
+                        <div id="ghost-filter-wrapper"> <img src="assets/validacion/Fantasma2.png" class="ghost-hunt-img" alt="Fantasma">
+                        </div>
                         <img src="assets/validacion/pentagrama.png" class="hunt-pentagram-img" alt="Pentagrama">
                     </div>
                     <p class="hunt-message-bottom">
