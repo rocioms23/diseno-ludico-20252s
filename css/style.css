@@ -319,9 +319,9 @@ body {
 }
 .ghost-hunt-img {
     position: absolute;
-    width: 70%;
+    width: 80%;
     left: 15%;
-    bottom:20%;
+    top: 15%;
     height: auto; 
     object-fit: contain; 
     filter: none;
@@ -343,7 +343,7 @@ body {
 }
 #ghost-filter-wrapper {
     position: absolute;
-    top: 70%; 
+    top: 50%; 
     left: 50%;
     transform: translate(-50%, -50%);
     width: 110%;  
