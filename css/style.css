@@ -319,8 +319,8 @@ body {
 }
 .ghost-hunt-img {
     position: absolute;
-    width: 80%;
-    left: 15%;
+    width: 90%;
+    left: 5%;
     top: 15%;
     height: auto; 
     object-fit: contain; 
