@@ -583,13 +583,137 @@ position: absolute;
     text-shadow: 0 0 10px #000;
 }
 
-/* Botón volver */
 .back-btn-fixed {
     background: none; border: none; color: #fff; font-size: 2em; 
     cursor: pointer; filter: drop-shadow(0 0 3px #000);
 }
 
-/* Ocultar el pentagrama del footer global en modo escape */
 #validation-overlay.escape-mode .pentagram-footer {
     display: none !important;
+}
+
+.validation-button-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.validation-icon {
+    width: 32px; 
+    height: 32px; 
+    object-fit: contain;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+    transition: transform 0.1s;
+}
+
+.action-zone.clue-zone {
+    padding: 0; 
+}
+
+.action-zone.clue-zone:active .validation-icon {
+    transform: scale(0.95);
+}
+
+.room-card .player-row:has(.prot-zone) .clue-zone {
+    justify-content: center;
+    align-items: center;
+}
+
+.haunted-validation-zone {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 10px;
+    background-color:transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    min-height: 100px; 
+}
+.haunted-validation-zone:active {
+    background-color: rgba(255, 0, 0, 0.5);
+    transform: scale(0.98);
+}
+
+.haunted-validation-icon {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 5px;
+}
+
+.haunted-validation-text {
+    /* Texto del botón */
+    font-family: var(--font-title);
+    color: #fff;
+    font-size: 1.1em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 3px #000;
+}
+
+.haunted-split-layout {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    align-items: stretch;
+}
+
+/* Columna Izquierda: Botón Validar */
+.haunted-left-col {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.288); /* Fondo oscuro transparente */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.haunted-left-col:active {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(0.98);
+}
+
+.haunted-split-icon {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    filter: none; 
+}
+
+.haunted-right-col {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.haunted-prot-row {
+    display: flex;
+    justify-content: space-between; /* Círculo a la izq, escudo a la derecha */
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.34);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 32px;
+    padding: 5px 10px;
+    cursor: pointer;
+    height: 38px; /* Altura compacta */
+}
+
+.haunted-prot-row:active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+
+.room-card.haunted-room {
+    animation: hauntedPulse 3s infinite;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
 }

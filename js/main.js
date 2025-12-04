@@ -144,7 +144,6 @@ function initTabs() {
         });
     });
 }
-
 function renderRooms() {
     const container = document.getElementById('room-list');
     container.innerHTML = ROOM_DATA.map(room => {
@@ -152,40 +151,85 @@ function renderRooms() {
         const isHaunted = room.name === gameState.ghostRoomName;
         const extraClass = isHaunted ? 'haunted-room' : '';
 
-        let playersHtml = '';
-        for (let i = 0; i < 4; i++) {
-            const hasClue = gameState.visits[room.name].clues[i] === 1;
-            const hasProt = gameState.visits[room.name].protection[i] === 1;
-            const clueClass = hasClue ? 'status-icon active' : 'status-icon';
-            const protClass = hasProt ? 'status-icon active' : 'status-icon';
+        let roomContentHtml = '';
 
+        if (isHaunted) {
+            // CASO 1: Habitación del Fantasma + Habitación Segura
+            // Diseño dividido: Izquierda (Botón) | Derecha (Lista Protección)
             if (isSafeRoom) {
-                playersHtml += `
-                    <div class="player-row">
-                        <div class="action-zone clue-zone" onclick="toggleAction('${room.name}', ${i}, 'clues')">
-                            <div class="player-circle" style="background-color: ${PLAYER_COLORS[i]}"></div>
-                            <img src="${ICONS.clues}" class="${clueClass}" alt="Pista">
+                let protectionRows = '';
+                for (let i = 0; i < 4; i++) {
+                    const hasProt = gameState.visits[room.name].protection[i] === 1;
+                    const protClass = hasProt ? 'status-icon active' : 'status-icon';
+                    
+                    protectionRows += `
+                        <div class="haunted-prot-row" onclick="toggleAction('${room.name}', ${i}, 'protection')">
+                            <div class="player-circle" style="background-color: ${PLAYER_COLORS[i]}; width: 15px; height: 15px;"></div>
+                            <img src="${ICONS.protection}" class="${protClass}" alt="Protección" style="width: 24px; height: 24px;">
+                        </div>`;
+                }
+
+                roomContentHtml = `
+                    <div class="haunted-split-layout">
+                        <div class="haunted-left-col" onclick="openVal()">
+                            <img src="assets/iconos/validar_pistas.png" class="haunted-split-icon" alt="Validar">
                         </div>
-                        <div class="row-divider"></div>
-                        <div class="action-zone prot-zone" onclick="toggleAction('${room.name}', ${i}, 'protection')">
-                            <img src="${ICONS.protection}" class="${protClass}" alt="Protección">
+                        
+                        <div class="haunted-right-col">
+                            ${protectionRows}
                         </div>
-                    </div>`;
-            } else {
-                playersHtml += `
-                    <div class="player-row" style="grid-template-columns: 1fr;">
-                        <div class="action-zone clue-zone" onclick="toggleAction('${room.name}', ${i}, 'clues')" style="justify-content: center; gap: 20px;">
-                            <div class="player-circle" style="background-color: ${PLAYER_COLORS[i]}"></div>
-                            <img src="${ICONS.clues}" class="${clueClass}" alt="Pista">
-                        </div>
-                    </div>`;
+                    </div>
+                `;
+            } 
+            // CASO 2: Habitación del Fantasma pero NO es Segura
+            // Diseño único: Solo botón grande centrado
+            else {
+                roomContentHtml = `
+                    <div class="action-zone haunted-validation-zone" onclick="openVal()">
+                        <img src="assets/iconos/validar_pistas.png" class="haunted-validation-icon" alt="Validar">
+                    </div>
+                `;
             }
+
+        } else {
+            // CASO 3: Habitaciones normales (No fantasma)
+            let playersHtml = '';
+            for (let i = 0; i < 4; i++) {
+                const hasClue = gameState.visits[room.name].clues[i] === 1;
+                const hasProt = gameState.visits[room.name].protection[i] === 1;
+                const clueClass = hasClue ? 'status-icon active' : 'status-icon';
+                const protClass = hasProt ? 'status-icon active' : 'status-icon';
+
+                if (isSafeRoom) {
+                    playersHtml += `
+                        <div class="player-row">
+                            <div class="action-zone clue-zone" onclick="toggleAction('${room.name}', ${i}, 'clues')">
+                                <div class="player-circle" style="background-color: ${PLAYER_COLORS[i]}"></div>
+                                <img src="${ICONS.clues}" class="${clueClass}" alt="Pista">
+                            </div>
+                            <div class="row-divider"></div>
+                            <div class="action-zone prot-zone" onclick="toggleAction('${room.name}', ${i}, 'protection')">
+                                <img src="${ICONS.protection}" class="${protClass}" alt="Protección">
+                            </div>
+                        </div>`;
+                } else {
+                    playersHtml += `
+                        <div class="player-row" style="grid-template-columns: 1fr;">
+                            <div class="action-zone clue-zone" onclick="toggleAction('${room.name}', ${i}, 'clues')" style="justify-content: center; gap: 20px;">
+                                <div class="player-circle" style="background-color: ${PLAYER_COLORS[i]}"></div>
+                                <img src="${ICONS.clues}" class="${clueClass}" alt="Pista">
+                            </div>
+                        </div>`;
+                }
+            }
+            roomContentHtml = `<div class="room-grid">${playersHtml}</div>`;
         }
+
         return `
             <div class="room-card ${extraClass}" style="background-image: url('assets/losetas/${room.img}');">
                 <div class="room-overlay-bg">
                     <div class="room-header-card"><span class="room-name">${room.name}</span></div>
-                    <div class="room-grid">${playersHtml}</div>
+                    ${roomContentHtml}
                 </div>
             </div>`;
     }).join('');
@@ -231,23 +275,27 @@ window.toggleGhostGuess = function (ghostName) {
 };
 
 
+window.openVal = function () {
+    const overlay = document.getElementById('validation-overlay');
+    
+    if (gameState.fantasmaSeleccionado) {
+        overlay.classList.remove('hidden');
+        setTimeout(() => overlay.classList.add('visible'), 10);
+        doVerify();
+    } else {
+        resetValidation();
+        overlay.classList.remove('hunt-mode');
+        overlay.classList.remove('escape-mode');
+        overlay.classList.remove('hidden');
+        setTimeout(() => overlay.classList.add('visible'), 10);
+    }
+};
+
 function initValidation() {
     const btn = document.getElementById('open-validation-btn');
-    const overlay = document.getElementById('validation-overlay');
-    btn.addEventListener('click', () => {
-        if (gameState.fantasmaSeleccionado) {
-            overlay.classList.remove('hidden');
-            setTimeout(() => overlay.classList.add('visible'), 10);
-            doVerify();
-        } else {
-            resetValidation();
-            overlay.classList.remove('hunt-mode');
-            overlay.classList.remove('escape-mode');
-            overlay.classList.remove('hidden');
-            setTimeout(() => overlay.classList.add('visible'), 10);
-        }
-    });
+    btn.addEventListener('click', window.openVal); 
 }
+
 function resetValidation() {
     selectedEv = null;
     const content = document.getElementById('validation-content');
