@@ -358,20 +358,42 @@ body {
         ghostEmergeUp 6s cubic-bezier(0.4, 0.0, 0.2, 1) 0.8s forwards,
         floatGhost 3s ease-in-out infinite 7.0s; 
 }
+#ghost-filter-warn-wrapper {
+    position: absolute;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 110%;  
+    height: 110%; 
+    max-width: 550px; 
+    z-index: 5;
+    opacity: 0; 
+    
+    animation: 
+        ghostEmergeUp2 6s cubic-bezier(0.4, 0.0, 0.2, 1) 0.8s forwards,
+        floatGhost 3s ease-in-out infinite 7.0s; 
+}
+@keyframes ghostEmergeUp2 {
+    0% {
+        opacity: 0; transform: translate(-50%, 10%) scale(0.8);  filter: drop-shadow(0 0 5px #ff00000a);
+    }
+    100% {
+        opacity: 0.9; transform: translate(-50%, -50%) scale(1);  filter: drop-shadow(0 0 15px #ff000031) drop-shadow(0 0 40px #ff00003a);
+    }
+}
 
 .ghost-warn-img{
-position: relative; 
-    width: 100%;
-    height: 100%; 
+    position: absolute;
+    width: 50%;
+    left: 25%;
+    top: 20%;
+    height: auto; 
     object-fit: contain; 
-
-    clip-path: inset(0 0 60% 0);
+    filter: none;
+    opacity: 0.5; 
+   clip-path: inset(0 0 0% 0);
     -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
     mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-
-    filter: none;
-    opacity: 1; 
-    animation: none;
 }
 
 .hunt-message-bottom {

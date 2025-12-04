@@ -430,7 +430,8 @@ window.doVerify = function () {
                 if (gameState.primeraRonda) {
                     contenido = `<h1 class="title-hunt">CUIDADO</h1>
                     <div class="hunt-visual-group">
-                        <img src="assets/validacion/Fantasma2.png" class="ghost-warn-img" alt="Fantasma">
+                        <div id="ghost-filter-warn-wrapper"> <img src="assets/validacion/Fantasma2.png" class="ghost-warn-img" alt="Fantasma">
+                        </div>
                         <img src="assets/validacion/pentagrama.png" class="hunt-pentagram-img" alt="Pentagrama">
                     </div>
                     <p class="hunt-message-bottom">
