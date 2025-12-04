@@ -383,7 +383,7 @@ window.doVerify = function () {
                         </div>
                         <h1 class="title-escape">¡ESCAPA!</h1>
                         <p class="escape-message-bottom">
-                            ¡Has descubierto al <span class="text-red-glow">${gameState.secretGhost.name}</span>!<br>
+                            ¡Has descubierto al <span>${gameState.secretGhost.name}</span>!<br>
                             Su furia se ha desatado. ¡Huye de la casa antes de que te atrape!
                         </p>
                     </div>`;
@@ -403,7 +403,7 @@ window.doVerify = function () {
                             <img src="assets/validacion/pentagrama.png" class="hunt-pentagram-img" alt="Pentagrama">
                         </div>
                         <p class="hunt-message-bottom">
-                            Te has equivocado... No es un <span class="text-red">${gameState.fantasmaSeleccionado}</span>.<br>
+                            Te has equivocado... No es un <span >${gameState.fantasmaSeleccionado}</span>.<br>
                             Tu error ha condenado a todos.<br>
                             Empieza la cacería final...
                         </p>
@@ -448,7 +448,7 @@ window.doVerify = function () {
                         <img src="assets/validacion/pentagrama.png" class="hunt-pentagram-img" alt="Pentagrama">
                     </div>
                     <p class="hunt-message-bottom">
-                        Has ingresado una pista <span class="text-red">incorrecta</span>...<br>
+                        Has ingresado una pista <span>incorrecta</span>...<br>
                         La ira del fantasma crece... A partir de ahora <br>
                         ya no pasará por alto las pistas erróneas e irá por vosotros...
                     </p>`;
@@ -462,7 +462,7 @@ window.doVerify = function () {
                         <img src="assets/validacion/pentagrama.png" class="hunt-pentagram-img" alt="Pentagrama">
                     </div>
                     <p class="hunt-message-bottom">
-                        Has ingresado una pista <span class="text-red">incorrecta</span>...<br>
+                        Has ingresado una pista <span>incorrecta</span>...<br>
                         Y desembocado la ira del fantasma.<br>
                         Empieza la cacería...
                     </p>`;
