@@ -287,6 +287,7 @@ body {
 
 .pentagram-footer {
     position: absolute; bottom: 0; left: 0; width: 100%; display: flex; justify-content: center; align-items: flex-end; pointer-events: none; opacity: 0.6; z-index: 1;
+    transition: opacity 0.1s ease;
 }
 .pentagram-footer img { width: 100%; height: auto; display: block; filter: drop-shadow(0 0 15px rgba(255,0,0,0.3)); }
 
@@ -294,7 +295,7 @@ body {
     display: flex; flex-direction: column; justify-content: space-between; height: 100%; padding-bottom: 40px; position: relative;
     animation: fadeInResult 1s ease-out forwards; 
 }
-.title-safe { font-family: var(--font-horror); font-size: 4em; color: #fff; text-shadow: 0 0 10px #000; margin-top: 20px; text-align: center; }
+.title-safe { font-family: var(--font-horror); font-size: 4em; color: #fff; text-shadow: 0 0 10px #000; margin-top: 20%; text-align: center; }
 .safe-message-bottom { font-family: var(--font-hand); font-size: 1.4em; color: #fff; text-align: center; margin-bottom: 60px; z-index: 20; line-height: 1.4; }
 .text-green { color: var(--neon-green); font-weight: bold; }
 
@@ -738,4 +739,27 @@ position: absolute;
 .room-card.haunted-room {
     animation: hauntedPulse 3s infinite;
     box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+}
+
+#black-curtain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    z-index: 9999; 
+    opacity: 0;
+    pointer-events: none; 
+    transition: opacity 0.5s ease-in-out;
+}
+
+#black-curtain.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.no-transition {
+    transition: none !important;
+    animation: none !important;
 }

@@ -38,11 +38,11 @@ const EVIDENCE_TYPES = [
     "ULTRAVIOLETA", "LIBRO", "ORBES", "MICRÓFONO PARABÓLICO"
 ];
 const EVIDENCE_ASSETS = {
-    "EMF": "emf.png",  
+    "EMF": "emf.png",
     "DOTS": "proyector_dots.png",
-    "TEMPERATURA": "termometro.png", 
+    "TEMPERATURA": "termometro.png",
     "CAJA ESPECTRAL": "caja_espectral.png",
-    "ULTRAVIOLETA": "ultravioleta.png", 
+    "ULTRAVIOLETA": "ultravioleta.png",
     "LIBRO": "libro_de_escritura_fantasma.png",
     "ORBES": "orbes_espectrales.png",
     "MICRÓFONO PARABÓLICO": "microfono_parabolico.png"
@@ -161,7 +161,7 @@ function renderRooms() {
                 for (let i = 0; i < 4; i++) {
                     const hasProt = gameState.visits[room.name].protection[i] === 1;
                     const protClass = hasProt ? 'status-icon active' : 'status-icon';
-                    
+
                     protectionRows += `
                         <div class="haunted-prot-row" onclick="toggleAction('${room.name}', ${i}, 'protection')">
                             <div class="player-circle" style="background-color: ${PLAYER_COLORS[i]}; width: 15px; height: 15px;"></div>
@@ -180,7 +180,7 @@ function renderRooms() {
                         </div>
                     </div>
                 `;
-            } 
+            }
             // CASO 2: Habitación del Fantasma pero NO es Segura
             // Diseño único: Solo botón grande centrado
             else {
@@ -279,8 +279,6 @@ window.openVal = function () {
     const overlay = document.getElementById('validation-overlay');
     
     if (gameState.fantasmaSeleccionado) {
-        overlay.classList.remove('hidden');
-        setTimeout(() => overlay.classList.add('visible'), 10);
         doVerify();
     } else {
         resetValidation();
@@ -290,10 +288,9 @@ window.openVal = function () {
         setTimeout(() => overlay.classList.add('visible'), 10);
     }
 };
-
 function initValidation() {
     const btn = document.getElementById('open-validation-btn');
-    btn.addEventListener('click', window.openVal); 
+    btn.addEventListener('click', window.openVal);
 }
 
 function resetValidation() {
@@ -342,60 +339,67 @@ function resetValidation() {
 window.closeVal = function () {
     const overlay = document.getElementById('validation-overlay');
     overlay.classList.remove('visible');
+    overlay.classList.remove('no-transition');
     setTimeout(() => {
         overlay.classList.remove('hunt-mode');
         overlay.classList.remove('escape-mode');
     }, 300);
     renderClues();
 };
+
 window.doVerify = function () {
+    const curtain = document.getElementById('black-curtain');
     const content = document.getElementById('validation-content');
     const overlay = document.getElementById('validation-overlay');
-    content.classList.add('fade-out-active');
+
+    curtain.classList.add('active');
 
     setTimeout(() => {
+        overlay.classList.add('no-transition');
+
+        overlay.classList.remove('hidden');
+        overlay.classList.add('visible');
+
         if (gameState.fantasmaSeleccionado) {
             const fantasmaCorrecto = gameState.fantasmaSeleccionado === gameState.secretGhost.name;
 
             if (fantasmaCorrecto) {
-    // FANTASMA CORRECTO -> PANTALLA DE ESCAPE
-    overlay.classList.add('escape-mode');
-    content.innerHTML = `
-        <div class="val-header">
-            <button class="back-btn-fixed" onclick="closeVal()">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-        </div>
-        
-        <div class="escape-screen-container">
-            
-            <img src="assets/validacion/marco_puerta2.png" class="door-frame-fullscreen" alt="Marco Puerta">
-
-            <div class="door-opening-zone">
-                 
-                 <div class="blinking-light-bg-full"></div>
-
-                 <img src="assets/validacion/pentagrama.png" class="pentagram-floor" alt="Pentagrama">
-
-                 <img src="assets/validacion/Fantasma2.png" class="ghost-in-door-centered" alt="Fantasma">
-            </div>
-
-            <h1 class="title-escape">¡ESCAPA!</h1>
-            <p class="escape-message-bottom">
-                ¡Has descubierto al <span class="text-red-glow">${gameState.secretGhost.name}</span>!<br>
-                Su furia se ha desatado. ¡Huye de la casa antes de que te atrape!
-            </p>
-        </div>`;
-} else {
-                // FANTASMA INCORRECTO -> CACERÍA DIRECTA
+                // ESCAPE
+                overlay.classList.add('escape-mode');
+                overlay.classList.remove('hunt-mode');
+                
+                content.innerHTML = `
+                    <div class="val-header">
+                        <button class="back-btn-fixed" onclick="closeVal()">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                    </div>
+                    <div class="escape-screen-container">
+                        <img src="assets/validacion/marco_puerta2.png" class="door-frame-fullscreen" alt="Marco Puerta">
+                        <div class="door-opening-zone">
+                             <div class="blinking-light-bg-full"></div>
+                             <img src="assets/validacion/pentagrama.png" class="pentagram-floor" alt="Pentagrama">
+                             <img src="assets/validacion/Fantasma2.png" class="ghost-in-door-centered" alt="Fantasma">
+                        </div>
+                        <h1 class="title-escape">¡ESCAPA!</h1>
+                        <p class="escape-message-bottom">
+                            ¡Has descubierto al <span class="text-red-glow">${gameState.secretGhost.name}</span>!<br>
+                            Su furia se ha desatado. ¡Huye de la casa antes de que te atrape!
+                        </p>
+                    </div>`;
+            } else {
+                // CACERÍA (Fantasma incorrecto)
                 overlay.classList.add('hunt-mode');
+                overlay.classList.remove('escape-mode');
+                
                 content.innerHTML = `
                     <div class="val-header"><button class="back-btn" onclick="closeVal()"><i class="fas fa-chevron-left"></i></button></div>
                     <div class="hunt-screen-container">
                          <h1 class="title-hunt">CACERÍA</h1>
                         <div class="hunt-visual-group">
-                        <div id="ghost-filter-wrapper"> <img src="assets/validacion/Fantasma2.png" class="ghost-hunt-img" alt="Fantasma">
-                        </div>
+                            <div id="ghost-filter-wrapper"> 
+                                <img src="assets/validacion/Fantasma2.png" class="ghost-hunt-img" alt="Fantasma">
+                            </div>
                             <img src="assets/validacion/pentagrama.png" class="hunt-pentagram-img" alt="Pentagrama">
                         </div>
                         <p class="hunt-message-bottom">
@@ -407,13 +411,17 @@ window.doVerify = function () {
             }
             gameState.fantasmaSeleccionado = null;
 
-        }
-        else if (selectedEv) {
+        } else if (selectedEv) {
+            // Lógica de PISTAS 
             const isCorrect = gameState.secretGhost.evidence.includes(selectedEv);
+            
             if (isCorrect) {
                 if (gameState.primeraRonda) gameState.primeraRonda = false;
                 if (!gameState.validatedEvidence.includes(selectedEv)) gameState.validatedEvidence.push(selectedEv);
+                
                 overlay.classList.remove('hunt-mode');
+                overlay.classList.remove('escape-mode');
+
                 content.innerHTML = `
                     <div class="val-header"><button class="back-btn" onclick="closeVal()"><i class="fas fa-chevron-left"></i></button></div>
                     <div class="safe-screen-container">
@@ -426,11 +434,16 @@ window.doVerify = function () {
             } else {
                 if (!gameState.incorrectEvidence.includes(selectedEv)) gameState.incorrectEvidence.push(selectedEv);
                 overlay.classList.add('hunt-mode');
+                overlay.classList.remove('escape-mode');
+
                 let contenido = '';
                 if (gameState.primeraRonda) {
-                    contenido = `<h1 class="title-hunt">CUIDADO</h1>
+                    gameState.primeraRonda = false;
+                    contenido = `
+                    <h1 class="title-hunt">CUIDADO</h1>
                     <div class="hunt-visual-group">
-                        <div id="ghost-filter-warn-wrapper"> <img src="assets/validacion/Fantasma2.png" class="ghost-warn-img" alt="Fantasma">
+                        <div id="ghost-filter-warn-wrapper"> 
+                            <img src="assets/validacion/Fantasma2.png" class="ghost-warn-img" alt="Fantasma">
                         </div>
                         <img src="assets/validacion/pentagrama.png" class="hunt-pentagram-img" alt="Pentagrama">
                     </div>
@@ -438,12 +451,13 @@ window.doVerify = function () {
                         Has ingresado una pista <span class="text-red">incorrecta</span>...<br>
                         La ira del fantasma crece... A partir de ahora <br>
                         ya no pasará por alto las pistas erróneas e irá por vosotros...
-                    </p>`
-                    gameState.primeraRonda = false
+                    </p>`;
                 } else {
-                    contenido = `<h1 class="title-hunt">CACERÍA</h1>
+                    contenido = `
+                    <h1 class="title-hunt">CACERÍA</h1>
                     <div class="hunt-visual-group">
-                        <div id="ghost-filter-wrapper"> <img src="assets/validacion/Fantasma2.png" class="ghost-hunt-img" alt="Fantasma">
+                        <div id="ghost-filter-wrapper"> 
+                            <img src="assets/validacion/Fantasma2.png" class="ghost-hunt-img" alt="Fantasma">
                         </div>
                         <img src="assets/validacion/pentagrama.png" class="hunt-pentagram-img" alt="Pentagrama">
                     </div>
@@ -451,15 +465,14 @@ window.doVerify = function () {
                         Has ingresado una pista <span class="text-red">incorrecta</span>...<br>
                         Y desembocado la ira del fantasma.<br>
                         Empieza la cacería...
-                    </p>`
+                    </p>`;
                 }
-                // HTML Pantalla CACERÍA (sin cambios sustanciales)
-                content.innerHTML = `
-                <div class="val-header"><button class="back-btn" onclick="closeVal()"><i class="fas fa-chevron-left"></i></button></div>
-                <div class="hunt-screen-container">${contenido}</div>`;
+                content.innerHTML = `<div class="val-header"><button class="back-btn" onclick="closeVal()"><i class="fas fa-chevron-left"></i></button></div><div class="hunt-screen-container">${contenido}</div>`;
             }
         }
-        content.classList.remove('fade-out-active');
+        setTimeout(() => {
+            curtain.classList.remove('active');
+        }, 50);
 
-    }, 500);
+    }, 600); 
 };
